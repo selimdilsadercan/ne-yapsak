@@ -1,12 +1,12 @@
 - [x] "npx create-next-app@latest {project-name}" to initialize nextjs
-- [ ] create github repo, and connect
-- [ ] change layout, change page.tsx, delete assets
-- [ ] create .env file, add .env to .gitignore
-- [ ] add .prettierrc
+- [x] create github repo, and connect
+- [x] change layout, change page.tsx, delete assets
+- [x] create .env file
+- [x] add .prettierrc
 
-- [ ] "npx shadcn@latest init" to initialize shadcn
-- [ ] html, body, :root { height: 100% } thing at app/globals.css
-- [ ] "npx shadcn-ui@latest add button" to add button
+- [x] "npx shadcn@latest init" to initialize shadcn
+- [x] html, body, :root { height: 100% } thing at app/globals.css
+- [x] "npx shadcn-ui@latest add button" to add button
 
 - [ ] "npm i convex"
 - [ ] "npx convex dev" to run convex, change .env.local to .env
