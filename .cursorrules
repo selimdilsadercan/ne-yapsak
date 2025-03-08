@@ -29,14 +29,11 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 - Use outlined regular lucide icons for all icons
 - no need cursor-not-allowed
 - always add a hover state to non-disabled buttons
-- always use IconButton for buttons that have only icon
 
 ### Implementation Guidelines
 
 - Use early returns whenever possible to make the code more readable.
 - always add pagination to lists
-- if something both have a detail page and a card component add a navigaiton to detail page from card
-- while implementing tabs, always use query to keep tab value. the first tab will be the default tab, and this tab doesnt add query, if selected-tab query is empty it is the default tab
 - while creating new component put component into suitable component folder
 - if possible wrap providers into new provider component and than import this wrapper to layout. like ToastProvider, StackProvider
 - if we have a component that we use across the app use that in same situations, like if we have a custom IconButton component use that custom component. if we dont have a custom component then if possible use shadcn components instead of creating from scratch, else create from scratch as last option
@@ -50,3 +47,9 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 - Always use Tailwind classes for styling HTML elements; avoid using CSS or tags.
 - always use npx shadcn@latest instead of npx shadcn-ui@latest
 - dont create unnecessary components, if it is only a part of one page and we should keep it simple and avoid unnecessary function extraction when the content is only used once in the page.
+
+### Backend
+
+- we use convex as backend
+- do not prefer to update schema while creating ui, if you must you can
+- use react-hot-toast to show users errors

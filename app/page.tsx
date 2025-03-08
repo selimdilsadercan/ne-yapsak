@@ -1,16 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
-export default function Home() {
-  const tasks = useQuery(api.tasks.get);
+function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      {tasks?.map(({ _id, text }) => (
-        <div key={_id}>{text}</div>
-      ))}
-    </main>
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Welcome to Ne Yapsak?</h1>
+      <p className="text-muted-foreground">Plan activities and have fun with your friends!</p>
+    </div>
   );
 }
+
+export default HomePage;

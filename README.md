@@ -1,47 +1,63 @@
-- [x] "npx create-next-app@latest {project-name}" to initialize nextjs
-- [x] create github repo, and connect
-- [x] change layout, change page.tsx, delete assets
-- [x] create .env file
-- [x] add .prettierrc
+# Ne Yapsak?
 
-- [x] "npx shadcn@latest init" to initialize shadcn
-- [x] html, body, :root { height: 100% } thing at app/globals.css
-- [x] "npx shadcn-ui@latest add button" to add button
+## Overview
 
-- [ ] "npm i convex"
-- [ ] "npx convex dev" to run convex, change .env.local to .env
-- [ ] create /convex/auth.config.js and add issuer url as domain
-- [ ] add providers/convex-provider.tsx, combine clerk and convex providers and wrap {children} with ConvexProvider
+Ne Yapsak? is a social event planning app designed for friends and friend groups to collaboratively decide on activities. Users can create event ideas, vote on plans, and confirm attendance. Additionally, a queue feature allows groups to swipe through suggested plans when they struggle to decide.
 
-- [ ] create coachroachdb cluster
-- [ ] press connect -> create new sql user -> copy password -> copy general connection string -> paste to .env as DATABASE_URL
-- [ ] "npm i -D prisma"
-- [ ] "npm i @prisma/client"
-- [ ] "npx prisma init"
-- [ ] create lib/db.ts
-- [ ] add "postinstall": "prisma generate" to package.json's scripts
-- [ ] change datasource db provider to cockroachdb in schema.prisma
-- [ ] note: "npx prisma generate" and "npx prisma db push" whenever schemas have changed
-- [ ] note: "npx prisma studio" to manage content
-- [ ] create Profile schema to keep users better
-- [ ] create lib/initial-profile.ts and lib/current-profile.ts
+## Features
 
----
+- **User Authentication**: Secure user sign-up and login.
+- **Friend Management**: Add friends and connect them with other users.
+- **Plan Ideas (To-Dos)**: Create and manage a list of potential activities.
+- **Group Voting & Confirmation**: Share plan ideas with friend groups where members can vote or confirm participation.
+- **Event Queue System**: When a group is undecided, they can swipe left or right on suggested plans to find an activity.
 
-- primary stack: nextjs13-app-nosrc, react, shadcn, tailwind, convex, clerk-withorg, liveblocks
-- secondary stack: zustand, date-fns, use-hooks, react-contenteditable, perfect-freehand
-- ui: font = poppins-inter-kalam, icons = lucide
-- extensions: color-highligt, error-lens, svg-preview, tailwind-intellisense, react-snippets
+## Tech Stack
 
----
+- **Frontend**: Next.js (React framework for server-side rendering and static site generation)
+- **Backend**: Convex (serverless database and backend logic)
+- **Authentication**: Clerk
+- **Database**: Convex (real-time and structured data storage)
+- **UI Framework**: Tailwind CSS for styling
+- **State Management**: React Context API or Zustand for state handling
+- **Hosting**: Vercel (for seamless Next.js deployment)
 
-- AuthLoading ve Authenticated kullanarak login sırasında bir loading animation yapabiliyosun
-- Clerk yazısını dev moddayken kapatabiliyosun
-- searchparams, state yönetiminden daha mantıklı
-- clerk > customization > avatars kısmından default resmi isme göre harf olarak değiştirebilirsin
-- useDebounce ile inputlarda zaman aralıklı state değişimi yapıyor
-- her bir durum için ayrı empty state'ler yapmayı unutma
-- formatDistanceToNow ile related date yazabiliyosun
-- many-to-one ya da many-to-one relationlar için ayrı veri yapıları tutuyoruz
-- Component.Skeleton kullanırken ayrı bir use client Loading dosyası açıp her şeyi onda birleştir
-- vercel'da yayınlamadan önce "npm run build" yaparak bir kontrol et (npm run dev kapalı olmalı)
+## Installation & Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/ne-yapsak.git
+   cd ne-yapsak
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Set up environment variables:
+   - Create a `.env.local` file
+   - Add necessary API keys and configuration
+4. Run the development server:
+   ```sh
+   npm run dev
+   ```
+5. Open `http://localhost:3000` to view the app.
+
+## Folder Structure
+
+```
+/ne-yapsak
+├── public/            # Static assets
+├── app/               # Next.js pages
+├── components/        # Reusable React components
+├── lib/               # API calls, Convex queries
+├── styles/            # Global styles (Tailwind CSS)
+├── convex/            # Convex backend logic
+└── .env.local         # Environment variables (ignored in Git)
+```
+
+## Future Enhancements
+
+- **Notifications**: Push notifications for event updates.
+- **Group Chat**: Real-time messaging within event groups.
+- **Calendar Integration**: Sync planned events with Google Calendar.
+
