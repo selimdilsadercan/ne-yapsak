@@ -7,6 +7,8 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Doc } from "@/convex/_generated/dataModel";
 import { toast } from "react-hot-toast";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useAuth } from "@clerk/nextjs";
 
 interface PlanCardProps {
   plan: Doc<"plans">;
@@ -16,7 +18,11 @@ interface PlanCardProps {
 function PlanCard({ plan, mode = "personal" }: PlanCardProps) {
   const remove = useMutation(api.plans.remove);
   const togglePublic = useMutation(api.plans.togglePublic);
+  const { userId } = useAuth();
+  const currentUser = useQuery(api.users.getUser, { clerkId: userId ?? "" });
   const creator = useQuery(api.users.getById, { userId: plan.creatorId });
+
+  const isOwner = currentUser?._id === plan.creatorId;
 
   const handleDelete = async () => {
     try {
@@ -47,14 +53,23 @@ function PlanCard({ plan, mode = "personal" }: PlanCardProps) {
             <p className="text-sm text-muted-foreground">{plan.description}</p>
             <p className="text-sm text-muted-foreground">{format(plan.createdAt, "PPP")}</p>
           </div>
-          {mode === "personal" && (
+          {isOwner && (
             <div className="flex gap-2">
               <Button variant="ghost" size="icon" className={plan.isPublic ? "text-primary" : "text-muted-foreground"} onClick={handleTogglePublic}>
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={handleDelete}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <ConfirmDialog
+                trigger={
+                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                }
+                title="Delete Plan"
+                description={`Are you sure you want to delete "${plan.title}"? This action cannot be undone.`}
+                onConfirm={handleDelete}
+                confirmText="Delete"
+                variant="destructive"
+              />
             </div>
           )}
         </div>

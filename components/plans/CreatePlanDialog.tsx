@@ -1,40 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
-
-interface FormValues {
-  title: string;
-  description: string;
-}
 
 function CreatePlanDialog() {
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState<Id<"categories"> | null>(null);
+
   const create = useMutation(api.plans.create);
+  const categories = useQuery(api.categories.list);
 
-  const form = useForm<FormValues>({
-    defaultValues: {
-      title: "",
-      description: ""
-    }
-  });
-
-  const onSubmit = async (data: FormValues) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       await create({
-        title: data.title,
-        description: data.description
+        title,
+        ...(description ? { description } : {}),
+        categoryId: categoryId ?? undefined
       });
       setOpen(false);
-      form.reset();
+      setTitle("");
+      setDescription("");
+      setCategoryId(null);
       toast.success("Plan created successfully!");
     } catch (error) {
       console.error("Failed to create plan:", error);
@@ -47,46 +46,47 @@ function CreatePlanDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          New Plan
+          Create Plan
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create New Plan</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter plan title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter plan description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Create Plan</DialogTitle>
+            <DialogDescription>Create a new plan to share with friends.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter plan title" required />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="category">Category</Label>
+              <Select value={categoryId ?? "none"} onValueChange={(value) => setCategoryId(value === "none" ? null : (value as Id<"categories">))}>
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No Category</SelectItem>
+                  {categories?.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter plan description (optional)" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" disabled={!title}>
               Create Plan
             </Button>
-          </form>
-        </Form>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

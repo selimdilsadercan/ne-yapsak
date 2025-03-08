@@ -12,12 +12,15 @@ export default defineSchema({
 
   plans: defineTable({
     title: v.string(),
-    description: v.string(),
-    createdAt: v.number(),
-    creatorId: v.id("users"),
+    description: v.optional(v.string()),
     isPublic: v.boolean(),
-    sharedWith: v.array(v.id("users"))
-  }).index("by_creator", ["creatorId"]),
+    creatorId: v.id("users"),
+    categoryId: v.optional(v.id("categories")),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_creator", ["creatorId"])
+    .index("by_public", ["isPublic"]),
 
   friendships: defineTable({
     userId1: v.id("users"),
@@ -39,5 +42,9 @@ export default defineSchema({
     userId: v.id("users"),
     joinedAt: v.number(),
     role: v.union(v.literal("member"), v.literal("admin"))
-  })
+  }),
+
+  categories: defineTable({
+    name: v.string()
+  }).index("by_name", ["name"])
 });

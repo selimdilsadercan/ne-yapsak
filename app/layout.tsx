@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { MobileNavbar } from "@/components/navigation/MobileNavbar";
-import { Sidebar } from "@/components/navigation/Sidebar";
 import { ToastProvider } from "@/providers/ToastProvider";
 import ConvexProvider from "@/providers/ConvexProvider";
-import { SyncUser } from "@/components/auth/SyncUser";
+import { MainLayout } from "@/components/layout/MainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,13 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConvexProvider>
           <ToastProvider />
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <main className="flex-1 md:pl-64">
-              <div className="container mx-auto p-4 pb-20 md:pb-4">{children}</div>
-            </main>
-            <MobileNavbar />
-          </div>
+          <MainLayout>{children}</MainLayout>
         </ConvexProvider>
       </body>
     </html>

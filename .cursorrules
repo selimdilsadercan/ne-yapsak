@@ -29,6 +29,7 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 - Use outlined regular lucide icons for all icons
 - no need cursor-not-allowed
 - always add a hover state to non-disabled buttons
+- in delete buttons always show a confirm dialog
 
 ### Implementation Guidelines
 
