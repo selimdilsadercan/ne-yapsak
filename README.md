@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+- [x] "npx create-next-app@latest {project-name}" to initialize nextjs
+- [ ] create github repo, and connect
+- [ ] change layout, change page.tsx, delete assets
+- [ ] create .env file, add .env to .gitignore
+- [ ] add .prettierrc
 
-## Getting Started
+- [ ] "npx shadcn@latest init" to initialize shadcn
+- [ ] html, body, :root { height: 100% } thing at app/globals.css
+- [ ] "npx shadcn-ui@latest add button" to add button
 
-First, run the development server:
+- [ ] "npm i convex"
+- [ ] "npx convex dev" to run convex, change .env.local to .env
+- [ ] create /convex/auth.config.js and add issuer url as domain
+- [ ] add providers/convex-provider.tsx, combine clerk and convex providers and wrap {children} with ConvexProvider
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [ ] create coachroachdb cluster
+- [ ] press connect -> create new sql user -> copy password -> copy general connection string -> paste to .env as DATABASE_URL
+- [ ] "npm i -D prisma"
+- [ ] "npm i @prisma/client"
+- [ ] "npx prisma init"
+- [ ] create lib/db.ts
+- [ ] add "postinstall": "prisma generate" to package.json's scripts
+- [ ] change datasource db provider to cockroachdb in schema.prisma
+- [ ] note: "npx prisma generate" and "npx prisma db push" whenever schemas have changed
+- [ ] note: "npx prisma studio" to manage content
+- [ ] create Profile schema to keep users better
+- [ ] create lib/initial-profile.ts and lib/current-profile.ts
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- primary stack: nextjs13-app-nosrc, react, shadcn, tailwind, convex, clerk-withorg, liveblocks
+- secondary stack: zustand, date-fns, use-hooks, react-contenteditable, perfect-freehand
+- ui: font = poppins-inter-kalam, icons = lucide
+- extensions: color-highligt, error-lens, svg-preview, tailwind-intellisense, react-snippets
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- AuthLoading ve Authenticated kullanarak login sırasında bir loading animation yapabiliyosun
+- Clerk yazısını dev moddayken kapatabiliyosun
+- searchparams, state yönetiminden daha mantıklı
+- clerk > customization > avatars kısmından default resmi isme göre harf olarak değiştirebilirsin
+- useDebounce ile inputlarda zaman aralıklı state değişimi yapıyor
+- her bir durum için ayrı empty state'ler yapmayı unutma
+- formatDistanceToNow ile related date yazabiliyosun
+- many-to-one ya da many-to-one relationlar için ayrı veri yapıları tutuyoruz
+- Component.Skeleton kullanırken ayrı bir use client Loading dosyası açıp her şeyi onda birleştir
+- vercel'da yayınlamadan önce "npm run build" yaparak bir kontrol et (npm run dev kapalı olmalı)
