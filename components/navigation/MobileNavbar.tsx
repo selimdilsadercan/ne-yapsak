@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User2, Users2, ListTodo } from "lucide-react";
+import { Home, User2, Users2, ListTodo, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function MobileNavbar() {
@@ -13,6 +13,11 @@ function MobileNavbar() {
       label: "Home",
       href: "/",
       icon: Home
+    },
+    {
+      label: "Discover",
+      href: "/discover",
+      icon: Compass
     },
     {
       label: "Social",

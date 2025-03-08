@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User2, Users2, ListTodo } from "lucide-react";
+import { Home, User2, Users2, ListTodo, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function Sidebar() {
@@ -13,6 +13,11 @@ function Sidebar() {
       label: "Home",
       href: "/",
       icon: Home
+    },
+    {
+      label: "Discover",
+      href: "/discover",
+      icon: Compass
     },
     {
       label: "Social",
@@ -34,7 +39,7 @@ function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r bg-background p-4 md:block">
       <div className="flex h-full flex-col gap-8">
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center px-2">
           <span className="text-xl font-semibold">Ne Yapsak?</span>
         </div>
         <nav className="flex flex-col gap-2">

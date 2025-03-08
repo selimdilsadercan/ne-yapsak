@@ -5,16 +5,29 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
+    clerkId: v.string(),
+    image: v.string(),
     createdAt: v.number()
-  }),
+  }).index("by_clerk_id", ["clerkId"]),
 
   plans: defineTable({
-    creatorId: v.id("users"),
     title: v.string(),
-    description: v.optional(v.string()),
+    description: v.string(),
     createdAt: v.number(),
-    status: v.union(v.literal("draft"), v.literal("shared"))
-  }),
+    creatorId: v.id("users"),
+    isPublic: v.boolean(),
+    sharedWith: v.array(v.id("users"))
+  }).index("by_creator", ["creatorId"]),
+
+  friendships: defineTable({
+    userId1: v.id("users"),
+    userId2: v.id("users"),
+    status: v.union(v.literal("pending"), v.literal("accepted")),
+    createdAt: v.number()
+  })
+    .index("by_user1", ["userId1"])
+    .index("by_user2", ["userId2"])
+    .index("by_users", ["userId1", "userId2"]),
 
   groups: defineTable({
     name: v.string(),

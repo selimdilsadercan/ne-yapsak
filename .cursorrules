@@ -51,5 +51,4 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 ### Backend
 
 - we use convex as backend
-- do not prefer to update schema while creating ui, if you must you can
 - use react-hot-toast to show users errors
