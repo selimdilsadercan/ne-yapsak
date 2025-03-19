@@ -14,7 +14,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as activities from "../activities.js";
-import type * as categories from "../categories.js";
+import type * as games from "../games.js";
+import type * as movies from "../movies.js";
+import type * as places from "../places.js";
+import type * as series from "../series.js";
 import type * as users from "../users.js";
 
 /**
@@ -27,7 +30,10 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
-  categories: typeof categories;
+  games: typeof games;
+  movies: typeof movies;
+  places: typeof places;
+  series: typeof series;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

@@ -6,7 +6,7 @@ export const store = mutation({
     clerkId: v.string(),
     email: v.string(),
     name: v.string(),
-    image: v.string()
+    imageUrl: v.string()
   },
   handler: async (ctx, args) => {
     const existingUser = await ctx.db
@@ -18,7 +18,7 @@ export const store = mutation({
       await ctx.db.patch(existingUser._id, {
         email: args.email,
         name: args.name,
-        image: args.image
+        image: args.imageUrl
       });
       return existingUser._id;
     }
@@ -27,8 +27,7 @@ export const store = mutation({
       clerkId: args.clerkId,
       email: args.email,
       name: args.name,
-      image: args.image,
-      createdAt: Date.now()
+      image: args.imageUrl
     });
   }
 });

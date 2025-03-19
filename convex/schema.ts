@@ -5,33 +5,119 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
-    clerkId: v.string(),
     image: v.string(),
-    createdAt: v.number()
+    clerkId: v.string()
   }).index("by_clerk_id", ["clerkId"]),
-
-  groups: defineTable({
-    name: v.string(),
-    createdAt: v.number()
-  }),
-
-  group_members: defineTable({
-    groupId: v.id("groups"),
-    userId: v.id("users"),
-    joinedAt: v.number(),
-    role: v.union(v.literal("member"), v.literal("admin"))
-  }),
-
-  categories: defineTable({
-    name: v.string()
-  }).index("by_name", ["name"]),
 
   activities: defineTable({
     name: v.string(),
     category: v.string(),
     iconName: v.string(),
-    // Optional fields for future use
+    contentType: v.string(),
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string())
-  }).index("by_category", ["category"])
+  }).index("by_category", ["category"]),
+
+  movies: defineTable({
+    title: v.string(),
+    year: v.number(),
+    genres: v.array(v.string()),
+    duration: v.number(),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    rating: v.optional(v.number())
+  }),
+
+  userMovies: defineTable({
+    userId: v.id("users"),
+    movieId: v.id("movies"),
+    status: v.string(),
+    userRating: v.optional(v.number()),
+    watchedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_movie", ["movieId"])
+    .index("by_user_and_movie", ["userId", "movieId"]),
+
+  series: defineTable({
+    title: v.string(),
+    startYear: v.number(),
+    endYear: v.optional(v.number()),
+    genres: v.array(v.string()),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    status: v.string(),
+    totalSeasons: v.number()
+  }),
+
+  userSeries: defineTable({
+    userId: v.id("users"),
+    seriesId: v.id("series"),
+    status: v.string(),
+    currentSeason: v.optional(v.number()),
+    currentEpisode: v.optional(v.number()),
+    userRating: v.optional(v.number()),
+    startedAt: v.optional(v.number()),
+    finishedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_series", ["seriesId"])
+    .index("by_user_and_series", ["userId", "seriesId"]),
+
+  games: defineTable({
+    title: v.string(),
+    platform: v.string(),
+    genres: v.array(v.string()),
+    releaseYear: v.number(),
+    developer: v.string(),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string())
+  }),
+
+  userGames: defineTable({
+    userId: v.id("users"),
+    gameId: v.id("games"),
+    status: v.string(),
+    playtime: v.optional(v.number()),
+    userRating: v.optional(v.number()),
+    startedAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_game", ["gameId"])
+    .index("by_user_and_game", ["userId", "gameId"]),
+
+  places: defineTable({
+    name: v.string(),
+    type: v.string(),
+    address: v.string(),
+    city: v.string(),
+    coordinates: v.object({
+      latitude: v.number(),
+      longitude: v.number()
+    }),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    priceRange: v.optional(v.string())
+  }),
+
+  userPlaces: defineTable({
+    userId: v.id("users"),
+    placeId: v.id("places"),
+    status: v.string(),
+    visitedAt: v.optional(v.number()),
+    userRating: v.optional(v.number()),
+    review: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_place", ["placeId"])
+    .index("by_user_and_place", ["userId", "placeId"])
 });
