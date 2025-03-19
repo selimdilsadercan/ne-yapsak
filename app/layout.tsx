@@ -4,12 +4,13 @@ import "./globals.css";
 import { ToastProvider } from "@/providers/ToastProvider";
 import ConvexProvider from "@/providers/ConvexProvider";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { MainNav } from "@/components/MainNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ne Yapsak?",
-  description: "Plan activities with friends"
+  title: "Ne Yapsak",
+  description: "Yapılacak aktiviteleri keşfet"
 };
 
 export default function RootLayout({
@@ -18,12 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <body className={inter.className}>
         <ConvexProvider>
           <ToastProvider />
           <MainLayout>{children}</MainLayout>
         </ConvexProvider>
+        <MainNav />
       </body>
     </html>
   );

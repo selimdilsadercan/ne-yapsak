@@ -1,60 +1,83 @@
 "use client";
 
-import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useState, useMemo } from "react";
+import { SwipeableCard } from "@/components/SwipeableCard";
+import { toast } from "react-hot-toast";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { PlanCard } from "@/components/plans/PlanCard";
-import Loading from "@/components/Loading";
 
-function AuthenticatedContent() {
-  const friendsPlans = useQuery(api.plans.listFriendsActivity);
-
-  if (friendsPlans === undefined) {
-    return <Loading />;
-  }
-
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Friends&apos; Activities</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {friendsPlans.map((plan) => (
-          <PlanCard key={plan._id} plan={plan} mode="friend" />
-        ))}
-        {friendsPlans.length === 0 && (
-          <div className="col-span-full rounded-lg border bg-card p-4 text-card-foreground">
-            <p className="text-muted-foreground">No friend activities yet. Add some friends or check out the discover page!</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+// Generate random angle between -8 and 8 degrees
+const getRandomAngle = () => Math.random() * 16 - 8;
 
 function HomePage() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const activities = useQuery(api.activities.getRandomActivities, { limit: 10 });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [watchlist, setWatchlist] = useState<string[]>([]);
 
-  if (!isLoaded) {
-    return <Loading />;
-  }
+  // Generate random angles for each card and memoize them
+  const cardAngles = useMemo(() => activities?.map(() => getRandomAngle()) ?? [], [activities]);
 
-  if (!isSignedIn) {
+  if (!activities) {
     return (
-      <div className="flex min-h-[80vh] flex-col items-center justify-center gap-8 text-center">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold">Welcome to Ne Yapsak?</h1>
-          <p className="text-xl text-muted-foreground">Plan activities and have fun with your friends!</p>
-        </div>
-        <SignInButton mode="modal">
-          <Button size="lg" className="text-lg">
-            Get Started
-          </Button>
-        </SignInButton>
+      <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
+        <h1 className="text-2xl font-bold">Yükleniyor...</h1>
       </div>
     );
   }
 
-  return <AuthenticatedContent />;
+  const handleSwipe = (direction: "left" | "right" | "up") => {
+    if (direction === "up") {
+      setWatchlist((prev) => [...prev, activities[currentIndex].name]);
+      toast.success("Listenize eklendi!");
+    } else if (direction === "right") {
+      toast.success("İyi eğlenceler!");
+    }
+
+    // Move to next card
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  if (currentIndex >= activities.length) {
+    return (
+      <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
+        <h1 className="text-2xl font-bold">Tüm aktiviteleri gördünüz!</h1>
+        <p className="text-muted-foreground">Daha fazla aktivite için keşfet sayfasını ziyaret edin.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container py-6">
+      <div className="mx-auto max-w-[320px]">
+        <div className="relative h-[500px]">
+          {activities.slice(currentIndex, currentIndex + 3).map((activity, index) => {
+            const angle = cardAngles[currentIndex + index];
+            const xOffset = Math.sin(angle * (Math.PI / 180)) * 5;
+
+            return (
+              <div
+                key={activity.name}
+                className="absolute inset-x-0"
+                style={{
+                  zIndex: activities.length - index,
+                  transform: `
+                    scale(${1 - index * 0.03}) 
+                    translateY(${index * 4}px)
+                    translateX(${xOffset}px)
+                    rotate(${angle}deg)
+                  `,
+                  opacity: 1 - index * 0.15,
+                  transition: "transform 0.3s ease-out"
+                }}
+              >
+                <SwipeableCard title={activity.name} iconName={activity.iconName} onSwipe={handleSwipe} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default HomePage;

@@ -10,28 +10,6 @@ export default defineSchema({
     createdAt: v.number()
   }).index("by_clerk_id", ["clerkId"]),
 
-  plans: defineTable({
-    title: v.string(),
-    description: v.optional(v.string()),
-    isPublic: v.boolean(),
-    creatorId: v.id("users"),
-    categoryId: v.optional(v.id("categories")),
-    createdAt: v.number(),
-    updatedAt: v.number()
-  })
-    .index("by_creator", ["creatorId"])
-    .index("by_public", ["isPublic"]),
-
-  friendships: defineTable({
-    userId1: v.id("users"),
-    userId2: v.id("users"),
-    status: v.union(v.literal("pending"), v.literal("accepted")),
-    createdAt: v.number()
-  })
-    .index("by_user1", ["userId1"])
-    .index("by_user2", ["userId2"])
-    .index("by_users", ["userId1", "userId2"]),
-
   groups: defineTable({
     name: v.string(),
     createdAt: v.number()
@@ -46,5 +24,14 @@ export default defineSchema({
 
   categories: defineTable({
     name: v.string()
-  }).index("by_name", ["name"])
+  }).index("by_name", ["name"]),
+
+  activities: defineTable({
+    name: v.string(),
+    category: v.string(),
+    iconName: v.string(),
+    // Optional fields for future use
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string())
+  }).index("by_category", ["category"])
 });
