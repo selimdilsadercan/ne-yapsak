@@ -18,6 +18,8 @@ import type * as games from "../games.js";
 import type * as movies from "../movies.js";
 import type * as places from "../places.js";
 import type * as series from "../series.js";
+import type * as userActivities from "../userActivities.js";
+import type * as userEvents from "../userEvents.js";
 import type * as users from "../users.js";
 
 /**
@@ -34,6 +36,8 @@ declare const fullApi: ApiFromModules<{
   movies: typeof movies;
   places: typeof places;
   series: typeof series;
+  userActivities: typeof userActivities;
+  userEvents: typeof userEvents;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

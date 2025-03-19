@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Calendar, Clock, Star, Trash2 } from "lucide-react";
+import { Calendar, Star, Trash2 } from "lucide-react";
 import { Doc } from "../convex/_generated/dataModel";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
@@ -18,23 +18,23 @@ import {
   AlertDialogTrigger
 } from "./ui/alert-dialog";
 
-interface ActivityCardProps {
-  userActivity: Doc<"userActivities"> & {
+interface EventCardProps {
+  userEvent: Doc<"userEvents"> & {
     activity: Doc<"activities">;
   };
   onUpdate: () => void;
 }
 
-export function ActivityCard({ userActivity, onUpdate }: ActivityCardProps) {
-  const remove = useMutation(api.userActivities.remove);
+export function EventCard({ userEvent, onUpdate }: EventCardProps) {
+  const remove = useMutation(api.userEvents.remove);
 
   const handleDelete = async () => {
     try {
-      await remove({ userActivityId: userActivity._id });
+      await remove({ userEventId: userEvent._id });
       onUpdate();
-      toast.success("Activity has been removed from your list");
+      toast.success("Event has been removed from your list");
     } catch (error) {
-      toast.error("Failed to remove activity");
+      toast.error("Failed to remove event");
     }
   };
 
@@ -42,30 +42,22 @@ export function ActivityCard({ userActivity, onUpdate }: ActivityCardProps) {
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border">{userActivity.activity.iconName}</div>
-          {userActivity.activity.name}
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border">{userEvent.activity.iconName}</div>
+          {userEvent.activity.name}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        {userActivity.lastDoneAt && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            Last done: {format(userActivity.lastDoneAt, "PPP")}
-          </div>
-        )}
-        {userActivity.frequency && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            Frequency: {userActivity.frequency}
-          </div>
-        )}
-        {userActivity.userRating && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Calendar className="h-4 w-4" />
+          {userEvent.date ? format(userEvent.date, "PPP") : "No date set"}
+        </div>
+        {userEvent.userRating && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Star className="h-4 w-4" />
-            {userActivity.userRating}/5
+            {userEvent.userRating}/5
           </div>
         )}
-        {userActivity.notes && <p className="text-sm text-muted-foreground">{userActivity.notes}</p>}
+        {userEvent.notes && <p className="text-sm text-muted-foreground">{userEvent.notes}</p>}
       </CardContent>
       <CardFooter className="flex justify-end gap-2">
         <AlertDialog>
@@ -77,7 +69,7 @@ export function ActivityCard({ userActivity, onUpdate }: ActivityCardProps) {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>This will remove the activity from your list. This action cannot be undone.</AlertDialogDescription>
+              <AlertDialogDescription>This will remove the event from your list. This action cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>

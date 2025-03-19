@@ -33,49 +33,15 @@ function GameList({ userId }: GameListProps) {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="playlist" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="playlist">Oynanacaklar ({playlist.length})</TabsTrigger>
-          <TabsTrigger value="playing">Oynanıyor ({playing.length})</TabsTrigger>
-          <TabsTrigger value="completed">Tamamlananlar ({completed.length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="playlist">
-          {playlist.length === 0 ? (
-            <EmptyState message="Oynamak istediğin oyunları buraya ekleyebilirsin" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {playlist.map((item: UserGameWithGame) => (
-                <div key={item._id}>Game Card Component</div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="playing">
-          {playing.length === 0 ? (
-            <EmptyState message="Şu anda oynadığın oyun yok" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {playing.map((item: UserGameWithGame) => (
-                <div key={item._id}>Game Card Component</div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="completed">
-          {completed.length === 0 ? (
-            <EmptyState message="Tamamladığın oyunlar burada görünecek" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {completed.map((item: UserGameWithGame) => (
-                <div key={item._id}>Game Card Component</div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      {playlist.length === 0 ? (
+        <EmptyState message="Oynamak istediğin oyunları buraya ekleyebilirsin" />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {playlist.map((item: UserGameWithGame) => (
+            <div key={item._id}>Game Card Component</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

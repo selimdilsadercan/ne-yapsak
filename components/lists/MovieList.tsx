@@ -34,49 +34,15 @@ function MovieList({ userId }: MovieListProps) {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="watchlist" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="watchlist">İzlenecekler ({watchlist.length})</TabsTrigger>
-          <TabsTrigger value="watching">İzleniyor ({watching.length})</TabsTrigger>
-          <TabsTrigger value="watched">İzlenenler ({watched.length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="watchlist">
-          {watchlist.length === 0 ? (
-            <EmptyState message="İzlemek istediğin filmleri buraya ekleyebilirsin" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {watchlist.map((item: UserMovieWithMovie) => (
-                <MovieCard key={item._id} movie={item.movie} userMovie={item} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="watching">
-          {watching.length === 0 ? (
-            <EmptyState message="Şu anda izlediğin film yok" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {watching.map((item: UserMovieWithMovie) => (
-                <MovieCard key={item._id} movie={item.movie} userMovie={item} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="watched">
-          {watched.length === 0 ? (
-            <EmptyState message="İzlediğin filmler burada görünecek" />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {watched.map((item: UserMovieWithMovie) => (
-                <MovieCard key={item._id} movie={item.movie} userMovie={item} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      {watchlist.length === 0 ? (
+        <EmptyState message="İzlemek istediğin filmleri buraya ekleyebilirsin" />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {watchlist.map((item: UserMovieWithMovie) => (
+            <MovieCard key={item._id} movie={item.movie} userMovie={item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

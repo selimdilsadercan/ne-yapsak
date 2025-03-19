@@ -119,5 +119,34 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_place", ["placeId"])
-    .index("by_user_and_place", ["userId", "placeId"])
+    .index("by_user_and_place", ["userId", "placeId"]),
+
+  userEvents: defineTable({
+    userId: v.id("users"),
+    activityId: v.id("activities"),
+    status: v.string(),
+    userRating: v.optional(v.number()),
+    date: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_activity", ["activityId"])
+    .index("by_user_and_activity", ["userId", "activityId"]),
+
+  userActivities: defineTable({
+    userId: v.id("users"),
+    activityId: v.id("activities"),
+    status: v.string(),
+    userRating: v.optional(v.number()),
+    lastDoneAt: v.optional(v.number()),
+    frequency: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_activity", ["activityId"])
+    .index("by_user_and_activity", ["userId", "activityId"])
 });
