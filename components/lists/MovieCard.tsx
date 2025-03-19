@@ -1,12 +1,20 @@
-import { Card } from "@/components/ui/card";
+"use client";
+
 import { Doc } from "@/convex/_generated/dataModel";
-import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
-import { MoreHorizontal, Star, Film } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Bookmark } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface MovieCardProps {
@@ -14,7 +22,8 @@ interface MovieCardProps {
   userMovie: Doc<"userMovies">;
 }
 
-function MovieCard({ movie, userMovie }: MovieCardProps) {
+export function MovieCard({ movie, userMovie }: MovieCardProps) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const updateStatus = useMutation(api.movies.updateUserMovieStatus);
 
   const handleStatusChange = async (status: string) => {
@@ -24,57 +33,83 @@ function MovieCard({ movie, userMovie }: MovieCardProps) {
         status,
         watchedAt: status === "watched" ? Date.now() : undefined
       });
-      toast.success("Durum güncellendi");
+      toast.success("Film durumu güncellendi");
     } catch (error) {
       toast.error("Bir hata oluştu");
     }
   };
 
   return (
-    <Card className="overflow-hidden group">
-      <div className="relative aspect-[2/3]">
-        {movie.imageUrl ? (
-          <img src={movie.imageUrl} alt={movie.title} className="object-cover w-full h-full" />
-        ) : (
-          <div className="w-full h-full bg-muted flex items-center justify-center">
-            <Film className="h-8 w-8 text-muted-foreground" />
-          </div>
-        )}
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleStatusChange("want_to_watch")}>İzleneceklere Ekle</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusChange("watching")}>İzliyorum</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusChange("watched")}>İzledim</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+    <div className="group relative aspect-[2/3] rounded-lg overflow-hidden">
+      {/* Movie Poster */}
+      <img src={movie.imageUrl || "/placeholder-movie.jpg"} alt={movie.title} className="absolute inset-0 object-cover w-full h-full" />
+
+      {/* Bookmark Icon */}
+      <div className="absolute top-2 left-2 z-10">
+        <Bookmark className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
-      <div className="p-3 space-y-1">
-        <h3 className="font-medium line-clamp-1">{movie.title}</h3>
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{movie.year}</span>
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+      {/* Content */}
+      <div className="absolute inset-0 p-4 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-white line-clamp-1">{movie.title}</h3>
+            <span className="text-sm text-white/80">({movie.year})</span>
+          </div>
+
           {movie.rating && (
             <div className="flex items-center gap-1">
-              <Star className="h-3 w-3 fill-current" />
-              <span>{movie.rating}</span>
+              <span className="bg-yellow-400 text-black text-xs font-bold px-1 rounded">IMDb</span>
+              <span className="text-sm text-white">{movie.rating.toFixed(1)}</span>
             </div>
           )}
+
+          {movie.description && <p className="text-sm text-white/80 line-clamp-3">{movie.description}</p>}
         </div>
-        <div className="text-xs text-muted-foreground">
-          {formatDistanceToNow(userMovie.addedAt, {
-            addSuffix: true,
-            locale: tr
-          })}
+
+        {/* Status Buttons */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2 bg-gradient-to-t from-black to-black/0 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => handleStatusChange("want_to_watch")}
+              className={`text-xs px-2 py-1 rounded ${
+                userMovie.status === "want_to_watch" ? "bg-primary text-white" : "bg-white/10 text-white hover:bg-white/20"
+              }`}
+            >
+              İzlenecek
+            </button>
+            <button
+              onClick={() => handleStatusChange("watching")}
+              className={`text-xs px-2 py-1 rounded ${userMovie.status === "watching" ? "bg-primary text-white" : "bg-white/10 text-white hover:bg-white/20"}`}
+            >
+              İzleniyor
+            </button>
+            <button
+              onClick={() => handleStatusChange("watched")}
+              className={`text-xs px-2 py-1 rounded ${userMovie.status === "watched" ? "bg-primary text-white" : "bg-white/10 text-white hover:bg-white/20"}`}
+            >
+              İzlendi
+            </button>
+          </div>
         </div>
       </div>
-    </Card>
+
+      {/* Delete Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Filmi listeden kaldır</AlertDialogTitle>
+            <AlertDialogDescription>Bu filmi listenizden kaldırmak istediğinize emin misiniz?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>İptal</AlertDialogCancel>
+            <AlertDialogAction onClick={() => setShowDeleteDialog(false)}>Kaldır</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }
-
-export { MovieCard };

@@ -25,7 +25,8 @@ export default defineSchema({
     duration: v.number(),
     imageUrl: v.optional(v.string()),
     description: v.optional(v.string()),
-    rating: v.optional(v.number())
+    rating: v.optional(v.number()),
+    tmdbId: v.optional(v.number())
   }),
 
   userMovies: defineTable({
@@ -95,31 +96,28 @@ export default defineSchema({
 
   places: defineTable({
     name: v.string(),
-    type: v.string(),
     address: v.string(),
-    city: v.string(),
-    coordinates: v.object({
-      latitude: v.number(),
-      longitude: v.number()
-    }),
-    imageUrl: v.optional(v.string()),
     description: v.optional(v.string()),
-    priceRange: v.optional(v.string())
-  }),
+    imageUrl: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    priceRange: v.optional(v.string()),
+    type: v.string(),
+    googlePlaceId: v.string(),
+    coordinates: v.object({
+      lat: v.number(),
+      lng: v.number()
+    })
+  }).index("by_google_place_id", ["googlePlaceId"]),
 
   userPlaces: defineTable({
     userId: v.id("users"),
     placeId: v.id("places"),
     status: v.string(),
-    visitedAt: v.optional(v.number()),
-    userRating: v.optional(v.number()),
-    review: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    visitDate: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number()
-  })
-    .index("by_user", ["userId"])
-    .index("by_place", ["placeId"])
-    .index("by_user_and_place", ["userId", "placeId"]),
+  }).index("by_user_and_place", ["userId", "placeId"]),
 
   userEvents: defineTable({
     userId: v.id("users"),
