@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@clerk/nextjs";
-import { Film, Tv, Gamepad2, MapPin, Calendar, Star, Youtube } from "lucide-react";
+import { Film, Gamepad2, MapPin, Calendar, Star, Youtube } from "lucide-react";
 import { MovieList } from "@/components/lists/MovieList";
 import { SeriesList } from "@/components/lists/SeriesList";
 import { GameList } from "@/components/lists/GameList";

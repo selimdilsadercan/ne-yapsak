@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 function ProfilePage() {
   const { user } = useUser();
@@ -29,7 +30,7 @@ function ProfilePage() {
 
           <div className="rounded-lg border bg-card p-6 text-card-foreground">
             <div className="flex items-center gap-4">
-              <img src={user?.imageUrl} alt={user?.fullName || "Profile"} className="h-20 w-20 rounded-full bg-muted object-cover" />
+              <Image src={user?.imageUrl || "/placeholder.png"} alt={user?.fullName || "Profile"} className="h-20 w-20 rounded-full bg-muted object-cover" />
               <div>
                 <h3 className="text-xl font-semibold">{user?.fullName}</h3>
                 <p className="text-sm text-muted-foreground">{user?.emailAddresses[0].emailAddress}</p>

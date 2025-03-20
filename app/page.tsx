@@ -10,14 +10,14 @@ import { api } from "@/convex/_generated/api";
 const getRandomAngle = () => Math.random() * 16 - 8;
 
 function HomePage() {
-  const activities = useQuery(api.activities.getRandomActivities, { limit: 10 });
+  const items = useQuery(api.activities.getRandomItems, { limit: 10 });
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [watchlist, setWatchlist] = useState<string[]>([]);
+  // Remove unused watchlist state
 
   // Generate random angles for each card and memoize them
-  const cardAngles = useMemo(() => activities?.map(() => getRandomAngle()) ?? [], [activities]);
+  const cardAngles = useMemo(() => items?.map(() => getRandomAngle()) ?? [], [items]);
 
-  if (!activities) {
+  if (!items) {
     return (
       <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
         <h1 className="text-2xl font-bold">Yükleniyor...</h1>
@@ -27,7 +27,6 @@ function HomePage() {
 
   const handleSwipe = (direction: "left" | "right" | "up") => {
     if (direction === "up") {
-      setWatchlist((prev) => [...prev, activities[currentIndex].name]);
       toast.success("Listenize eklendi!");
     } else if (direction === "right") {
       toast.success("İyi eğlenceler!");
@@ -37,11 +36,11 @@ function HomePage() {
     setCurrentIndex((prev) => prev + 1);
   };
 
-  if (currentIndex >= activities.length) {
+  if (currentIndex >= items.length) {
     return (
       <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
-        <h1 className="text-2xl font-bold">Tüm aktiviteleri gördünüz!</h1>
-        <p className="text-muted-foreground">Daha fazla aktivite için keşfet sayfasını ziyaret edin.</p>
+        <h1 className="text-2xl font-bold">Tüm önerileri gördünüz!</h1>
+        <p className="text-muted-foreground">Daha fazla öneri için keşfet sayfasını ziyaret edin.</p>
       </div>
     );
   }
@@ -50,16 +49,19 @@ function HomePage() {
     <div className="container py-6">
       <div className="mx-auto max-w-[320px]">
         <div className="relative h-[500px]">
-          {activities.slice(currentIndex, currentIndex + 3).map((activity, index) => {
+          {items.slice(currentIndex, currentIndex + 3).map((item, index) => {
             const angle = cardAngles[currentIndex + index];
             const xOffset = Math.sin(angle * (Math.PI / 180)) * 5;
 
+            // Get image URL if it's a movie or series
+            const imageUrl = item.type === "movie" || item.type === "series" ? item.imageUrl : undefined;
+
             return (
               <div
-                key={activity.name}
+                key={item.name}
                 className="absolute inset-x-0"
                 style={{
-                  zIndex: activities.length - index,
+                  zIndex: items.length - index,
                   transform: `
                     scale(${1 - index * 0.03}) 
                     translateY(${index * 4}px)
@@ -70,7 +72,7 @@ function HomePage() {
                   transition: "transform 0.3s ease-out"
                 }}
               >
-                <SwipeableCard title={activity.name} iconName={activity.iconName} onSwipe={handleSwipe} />
+                <SwipeableCard title={item.name} iconName={item.iconName} imageUrl={imageUrl} onSwipe={handleSwipe} />
               </div>
             );
           })}

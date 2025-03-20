@@ -34,7 +34,7 @@ export function ActivityCard({ userActivity, onUpdate }: ActivityCardProps) {
       onUpdate();
       toast.success("Activity has been removed from your list");
     } catch (error) {
-      toast.error("Failed to remove activity");
+      toast.error(`Failed to remove activity: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
     }
   };
 

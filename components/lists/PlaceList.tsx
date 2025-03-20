@@ -4,7 +4,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/EmptyState";
-import { Doc } from "@/convex/_generated/dataModel";
 import { PlaceSearchDialog } from "./PlaceSearchDialog";
 import { PlaceCard } from "./PlaceCard";
 
@@ -12,9 +11,6 @@ interface PlaceListProps {
   userId: string;
 }
 
-type UserPlaceWithPlace = Doc<"userPlaces"> & {
-  place: Doc<"places">;
-};
 
 export function PlaceList({ userId }: PlaceListProps) {
   const userPlaces = useQuery(api.places.getUserPlaces, { userId });

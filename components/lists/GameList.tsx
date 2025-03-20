@@ -2,7 +2,6 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/EmptyState";
 import { Doc } from "@/convex/_generated/dataModel";
 
@@ -28,8 +27,6 @@ function GameList({ userId }: GameListProps) {
   }
 
   const playlist = userGames.filter((g: UserGameWithGame) => g.status === "want_to_play");
-  const playing = userGames.filter((g: UserGameWithGame) => g.status === "playing");
-  const completed = userGames.filter((g: UserGameWithGame) => g.status === "completed");
 
   return (
     <div className="space-y-6">

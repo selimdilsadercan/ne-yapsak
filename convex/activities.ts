@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 // Get all activities
 export const getAll = query({
@@ -569,5 +570,116 @@ export const migrateAddContentType = mutation({
         await ctx.db.patch(activity._id, { contentType });
       }
     }
+  }
+});
+
+export const getCombinedFeed = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const { userId } = args;
+
+    // Get user's activities
+    const activities = await ctx.db.query("activities").collect();
+
+    // Get user's movies
+    const userMovies = await ctx.db
+      .query("userMovies")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+
+    // Get user's series
+    const userSeries = await ctx.db
+      .query("userSeries")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+
+    // Get all movies and series details
+    const movieIds = userMovies.map((um) => um.movieId).filter((id): id is Id<"movies"> => id !== null);
+    const seriesIds = userSeries.map((us) => us.seriesId).filter((id): id is Id<"series"> => id !== null);
+
+    const movies = await Promise.all(movieIds.map((id) => ctx.db.get(id)));
+    const seriesDetails = await Promise.all(seriesIds.map((id) => ctx.db.get(id)));
+
+    // Combine all items into a single array with type information
+    const combinedItems = [
+      ...activities.map((activity) => ({
+        type: "activity" as const,
+        id: activity._id,
+        name: activity.name,
+        iconName: activity.iconName,
+        createdAt: activity._creationTime
+      })),
+      ...userMovies.map((userMovie) => {
+        const movie = movies.find((m) => m?._id === userMovie.movieId);
+        return {
+          type: "movie" as const,
+          id: userMovie._id,
+          name: movie?.title || "Unknown Movie",
+          iconName: "Film",
+          createdAt: userMovie._creationTime,
+          movie,
+          userMovie
+        };
+      }),
+      ...userSeries.map((userSeriesItem) => {
+        const seriesDetail = seriesDetails.find((s) => s?._id === userSeriesItem.seriesId);
+        return {
+          type: "series" as const,
+          id: userSeriesItem._id,
+          name: seriesDetail?.title || "Unknown Series",
+          iconName: "Tv",
+          createdAt: userSeriesItem._creationTime,
+          series: seriesDetail,
+          userSeries: userSeriesItem
+        };
+      })
+    ];
+
+    // Sort by creation time, newest first
+    return combinedItems.sort((a, b) => b.createdAt - a.createdAt);
+  }
+});
+
+export const getRandomItems = query({
+  args: { limit: v.number() },
+  handler: async (ctx, args) => {
+    // Get random activities
+    const activities = await ctx.db.query("activities").collect();
+    const randomActivities = activities.sort(() => Math.random() - 0.5).slice(0, Math.ceil(args.limit / 3));
+
+    // Get random movies
+    const movies = await ctx.db.query("movies").collect();
+    const randomMovies = movies.sort(() => Math.random() - 0.5).slice(0, Math.ceil(args.limit / 3));
+
+    // Get random series
+    const series = await ctx.db.query("series").collect();
+    const randomSeries = series.sort(() => Math.random() - 0.5).slice(0, Math.ceil(args.limit / 3));
+
+    // Combine and format all items
+    const combinedItems = [
+      ...randomActivities.map((activity) => ({
+        type: "activity" as const,
+        name: activity.name,
+        iconName: activity.iconName,
+        contentType: activity.contentType
+      })),
+      ...randomMovies.map((movie) => ({
+        type: "movie" as const,
+        name: movie.title,
+        iconName: "Film",
+        contentType: "movie",
+        imageUrl: movie.imageUrl
+      })),
+      ...randomSeries.map((series) => ({
+        type: "series" as const,
+        name: series.title,
+        iconName: "Tv",
+        contentType: "series",
+        imageUrl: series.imageUrl
+      }))
+    ];
+
+    // Shuffle the combined array and limit to requested size
+    return combinedItems.sort(() => Math.random() - 0.5).slice(0, args.limit);
   }
 });

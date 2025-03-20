@@ -10,6 +10,7 @@ import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "react-hot-toast";
 import { PlusIcon } from "lucide-react";
+import Image from "next/image";
 
 function MovieSearchDialog() {
   const [open, setOpen] = useState(false);
@@ -80,7 +81,7 @@ function MovieSearchDialog() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {searchResults.map((movie) => (
             <div key={movie.id} className="relative group">
-              <img src={getTMDBImageUrl(movie.poster_path)} alt={movie.title} className="w-full h-auto rounded-lg" />
+              <Image src={getTMDBImageUrl(movie.poster_path)} alt={movie.title} className="w-full h-auto rounded-lg" />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
                 <h3 className="font-semibold text-center mb-2">{movie.title}</h3>
                 <p className="text-sm mb-2">{new Date(movie.release_date).getFullYear()}</p>

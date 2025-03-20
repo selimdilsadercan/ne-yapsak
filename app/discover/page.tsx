@@ -43,7 +43,7 @@ function DiscoverPage() {
                 <div className="flex gap-4">
                   {activities.map((activity) => (
                     <div key={activity._id} className="w-[140px] shrink-0">
-                      <DiscoverCard title={activity.name} category={activity.category} iconName={activity.iconName} />
+                      <DiscoverCard title={activity.name} category={activity.category} iconName={activity.iconName as keyof typeof import("lucide-react")} />
                     </div>
                   ))}
                 </div>

@@ -5,15 +5,11 @@ import { api } from "@/convex/_generated/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MovieCard } from "./MovieCard";
 import { EmptyState } from "@/components/EmptyState";
-import { Doc } from "@/convex/_generated/dataModel";
 
 interface MovieListProps {
   userId: string;
 }
 
-type UserMovieWithMovie = Doc<"userMovies"> & {
-  movie: Doc<"movies">;
-};
 
 export function MovieList({ userId }: MovieListProps) {
   const userMovies = useQuery(api.movies.getUserMovies, { userId });

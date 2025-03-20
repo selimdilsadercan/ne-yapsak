@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 interface PlaceCardProps {
   place: Doc<"places">;
@@ -35,7 +36,7 @@ export function PlaceCard({ place, userPlace }: PlaceCardProps) {
       });
       toast.success("Mekan durumu güncellendi");
     } catch (error) {
-      toast.error("Bir hata oluştu");
+      toast.error(`Failed to update place status: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 
@@ -44,7 +45,7 @@ export function PlaceCard({ place, userPlace }: PlaceCardProps) {
       {/* Place Image */}
       <div className="absolute inset-0">
         {place.imageUrl ? (
-          <img src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
+          <Image src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center">
             <MapPin className="w-8 h-8 text-muted-foreground" />

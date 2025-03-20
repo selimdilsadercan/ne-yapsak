@@ -1,5 +1,7 @@
 import { format } from "date-fns";
 import { Calendar, Star, Trash2 } from "lucide-react";
+import * as Icons from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Doc } from "../convex/_generated/dataModel";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
@@ -27,6 +29,7 @@ interface EventCardProps {
 
 export function EventCard({ userEvent, onUpdate }: EventCardProps) {
   const remove = useMutation(api.userEvents.remove);
+  const IconComponent = (Icons[userEvent.activity.iconName as keyof typeof Icons] as LucideIcon) || Icons.HelpCircle;
 
   const handleDelete = async () => {
     try {
@@ -34,7 +37,7 @@ export function EventCard({ userEvent, onUpdate }: EventCardProps) {
       onUpdate();
       toast.success("Event has been removed from your list");
     } catch (error) {
-      toast.error("Failed to remove event");
+      toast.error(`Failed to remove event: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 
@@ -42,7 +45,9 @@ export function EventCard({ userEvent, onUpdate }: EventCardProps) {
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border">{userEvent.activity.iconName}</div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border">
+            <IconComponent className="h-4 w-4" />
+          </div>
           {userEvent.activity.name}
         </CardTitle>
       </CardHeader>

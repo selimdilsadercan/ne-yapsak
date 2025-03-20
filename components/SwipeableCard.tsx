@@ -1,18 +1,20 @@
 import { motion, PanInfo, useAnimation, useMotionValue, useTransform } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import * as Icons from "lucide-react";
+import Image from "next/image";
 
 interface SwipeableCardProps {
   title: string;
   iconName: string;
+  imageUrl?: string;
   onSwipe: (direction: "left" | "right" | "up") => void;
 }
 
-function SwipeableCard({ title, iconName, onSwipe }: SwipeableCardProps) {
+function SwipeableCard({ title, iconName, imageUrl, onSwipe }: SwipeableCardProps) {
   const controls = useAnimation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  // @ts-ignore - We know these icons exist in lucide-react
+  // @ts-expect-error - We know these icons exist in lucide-react
   const Icon = Icons[iconName];
 
   // Calculate rotation based on drag
@@ -23,7 +25,7 @@ function SwipeableCard({ title, iconName, onSwipe }: SwipeableCardProps) {
   const rightIndicatorOpacity = useTransform(x, [0, 100, 200], [0, 1, 1]);
   const upIndicatorOpacity = useTransform(y, [-200, -100, 0], [1, 1, 0]);
 
-  const handleDragEnd = async (event: any, info: PanInfo) => {
+  const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const offset = info.offset;
     const velocity = info.velocity;
 
@@ -88,7 +90,11 @@ function SwipeableCard({ title, iconName, onSwipe }: SwipeableCardProps) {
         </motion.div>
 
         <div className="relative aspect-[4/5] w-full bg-muted">
-          <div className="flex h-full items-center justify-center">{Icon && <Icon className="h-32 w-32 text-muted-foreground/50" />}</div>
+          {imageUrl ? (
+            <Image src={imageUrl} alt={title} fill className="object-cover" sizes="(max-width: 320px) 100vw, 320px" />
+          ) : (
+            <div className="flex h-full items-center justify-center">{Icon && <Icon className="h-32 w-32 text-muted-foreground/50" />}</div>
+          )}
         </div>
         <CardHeader>
           <CardTitle className="text-xl">{title}</CardTitle>

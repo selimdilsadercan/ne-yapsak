@@ -64,7 +64,7 @@ export function PlaceSearchDialog({ userId }: PlaceSearchDialogProps) {
       toast.success("Mekan başarıyla eklendi");
       setOpen(false);
     } catch (error) {
-      toast.error("Mekan eklenirken bir hata oluştu");
+      toast.error(`Failed to add place: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 interface MovieCardProps {
   movie: Doc<"movies">;
@@ -35,14 +36,14 @@ export function MovieCard({ movie, userMovie }: MovieCardProps) {
       });
       toast.success("Film durumu güncellendi");
     } catch (error) {
-      toast.error("Bir hata oluştu");
+      toast.error(`Failed to update movie status: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 
   return (
     <div className="group relative aspect-[2/3] rounded-lg overflow-hidden">
       {/* Movie Poster */}
-      <img src={movie.imageUrl || "/placeholder-movie.jpg"} alt={movie.title} className="absolute inset-0 object-cover w-full h-full" />
+      <Image src={movie.imageUrl || "/placeholder-movie.jpg"} alt={movie.title} className="absolute inset-0 object-cover w-full h-full" />
 
       {/* Bookmark Icon */}
       <div className="absolute top-2 left-2 z-10">
