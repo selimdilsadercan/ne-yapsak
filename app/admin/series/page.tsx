@@ -1,0 +1,81 @@
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tv, Search, Plus, Star } from "lucide-react";
+import Image from "next/image";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
+
+export default function SeriesPage() {
+  const series = useQuery(api.series.getAllSeries);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">TV Series</h2>
+          <p className="text-muted-foreground">Manage TV series in your database.</p>
+        </div>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Series
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Series List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search TV series..." className="pl-8" />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {series?.map((show: Doc<"series">) => (
+              <Card key={show._id} className="overflow-hidden">
+                <div className="relative aspect-[2/3]">
+                  <Image src={show.imageUrl || "/placeholder.png"} alt={show.title} fill className="object-cover" />
+                </div>
+                <CardContent className="p-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold line-clamp-1">{show.title}</h3>
+                      <span className="text-sm text-muted-foreground">
+                        {show.startYear}
+                        {show.endYear ? `-${show.endYear}` : "-Present"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 text-yellow-400" />
+                        <span>N/A</span>
+                      </div>
+                      <span>{show.totalSeasons} Seasons</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" className="w-full">
+                        Edit
+                      </Button>
+                      <Button variant="destructive" size="sm">
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

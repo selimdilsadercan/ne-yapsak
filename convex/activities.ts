@@ -683,3 +683,30 @@ export const getRandomItems = query({
     return combinedItems.sort(() => Math.random() - 0.5).slice(0, args.limit);
   }
 });
+
+// Update an activity
+export const update = mutation({
+  args: {
+    id: v.id("activities"),
+    name: v.string(),
+    category: v.string(),
+    iconName: v.string(),
+    contentType: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    const { id, ...data } = args;
+    return await ctx.db.patch(id, data);
+  }
+});
+
+// Delete an activity
+export const deleteActivity = mutation({
+  args: {
+    id: v.id("activities")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.delete(args.id);
+  }
+});

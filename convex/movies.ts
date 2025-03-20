@@ -277,3 +277,53 @@ export const addMovieFromTMDB = mutation({
     return { success: true };
   }
 });
+
+// Admin functions
+export const getAllMovies = query({
+  handler: async (ctx) => {
+    return await ctx.db.query("movies").collect();
+  }
+});
+
+export const createMovie = mutation({
+  args: {
+    title: v.string(),
+    year: v.number(),
+    genres: v.array(v.string()),
+    duration: v.number(),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    tmdbId: v.optional(v.number())
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("movies", args);
+  }
+});
+
+export const updateMovie = mutation({
+  args: {
+    id: v.id("movies"),
+    title: v.string(),
+    year: v.number(),
+    genres: v.array(v.string()),
+    duration: v.number(),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    tmdbId: v.optional(v.number())
+  },
+  handler: async (ctx, args) => {
+    const { id, ...data } = args;
+    return await ctx.db.patch(id, data);
+  }
+});
+
+export const deleteMovie = mutation({
+  args: {
+    id: v.id("movies")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.delete(args.id);
+  }
+});

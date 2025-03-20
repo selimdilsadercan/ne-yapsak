@@ -41,3 +41,53 @@ export const updateUserSeriesStatus = mutation({
     });
   }
 });
+
+// Admin functions
+export const getAllSeries = query({
+  handler: async (ctx) => {
+    return await ctx.db.query("series").collect();
+  }
+});
+
+export const createSeries = mutation({
+  args: {
+    title: v.string(),
+    startYear: v.number(),
+    endYear: v.optional(v.number()),
+    genres: v.array(v.string()),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    status: v.string(),
+    totalSeasons: v.number()
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("series", args);
+  }
+});
+
+export const updateSeries = mutation({
+  args: {
+    id: v.id("series"),
+    title: v.string(),
+    startYear: v.number(),
+    endYear: v.optional(v.number()),
+    genres: v.array(v.string()),
+    imageUrl: v.optional(v.string()),
+    description: v.optional(v.string()),
+    status: v.string(),
+    totalSeasons: v.number()
+  },
+  handler: async (ctx, args) => {
+    const { id, ...data } = args;
+    return await ctx.db.patch(id, data);
+  }
+});
+
+export const deleteSeries = mutation({
+  args: {
+    id: v.id("series")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.delete(args.id);
+  }
+});

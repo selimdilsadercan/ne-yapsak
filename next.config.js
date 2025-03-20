@@ -9,6 +9,14 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "image.tmdb.org"
+      },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com"
+      },
+      {
+        protocol: "https",
+        hostname: "media.rawg.io"
       }
       // ... any existing patterns ...
     ]

@@ -70,28 +70,25 @@ export default defineSchema({
     .index("by_user_and_series", ["userId", "seriesId"]),
 
   games: defineTable({
+    rawgId: v.number(),
     title: v.string(),
-    platform: v.string(),
-    genres: v.array(v.string()),
-    releaseYear: v.number(),
-    developer: v.string(),
-    imageUrl: v.optional(v.string()),
-    description: v.optional(v.string())
-  }),
+    year: v.number(),
+    description: v.string(),
+    imageUrl: v.string(),
+    rating: v.number(),
+    metacritic: v.union(v.number(), v.null())
+  }).index("by_rawg_id", ["rawgId"]),
 
   userGames: defineTable({
-    userId: v.id("users"),
+    userId: v.string(),
     gameId: v.id("games"),
     status: v.string(),
-    playtime: v.optional(v.number()),
-    userRating: v.optional(v.number()),
-    startedAt: v.optional(v.number()),
-    completedAt: v.optional(v.number()),
-    createdAt: v.number(),
-    updatedAt: v.number()
+    addedAt: v.number(),
+    playedAt: v.optional(v.number()),
+    rating: v.optional(v.number()),
+    notes: v.optional(v.string())
   })
     .index("by_user", ["userId"])
-    .index("by_game", ["gameId"])
     .index("by_user_and_game", ["userId", "gameId"]),
 
   places: defineTable({

@@ -30,7 +30,15 @@ function ProfilePage() {
 
           <div className="rounded-lg border bg-card p-6 text-card-foreground">
             <div className="flex items-center gap-4">
-              <Image src={user?.imageUrl || "/placeholder.png"} alt={user?.fullName || "Profile"} className="h-20 w-20 rounded-full bg-muted object-cover" />
+              <div className="relative h-20 w-20">
+                <Image
+                  src={user?.imageUrl || "/placeholder.png"}
+                  alt={user?.fullName || "Profile"}
+                  fill
+                  className="rounded-full bg-muted object-cover"
+                  sizes="80px"
+                />
+              </div>
               <div>
                 <h3 className="text-xl font-semibold">{user?.fullName}</h3>
                 <p className="text-sm text-muted-foreground">{user?.emailAddresses[0].emailAddress}</p>

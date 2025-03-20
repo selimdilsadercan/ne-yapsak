@@ -43,11 +43,15 @@ export function MovieCard({ movie, userMovie }: MovieCardProps) {
   return (
     <div className="group relative aspect-[2/3] rounded-lg overflow-hidden">
       {/* Movie Poster */}
-      <Image src={movie.imageUrl || "/placeholder-movie.jpg"} alt={movie.title} className="absolute inset-0 object-cover w-full h-full" />
-
-      {/* Bookmark Icon */}
-      <div className="absolute top-2 left-2 z-10">
-        <Bookmark className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      <div className="absolute inset-0">
+        <Image
+          src={movie.imageUrl || "/placeholder-movie.jpg"}
+          alt={movie.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover"
+          priority={false}
+        />
       </div>
 
       {/* Gradient Overlay */}
