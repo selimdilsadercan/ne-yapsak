@@ -174,7 +174,8 @@ export default defineSchema({
     followerCount: v.number()
   })
     .index("by_creator", ["createdBy"])
-    .index("by_type", ["type"]),
+    .index("by_type", ["type"])
+    .index("by_follower_count", ["followerCount"]),
 
   listItems: defineTable({
     listId: v.id("lists"),

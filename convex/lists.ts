@@ -401,3 +401,23 @@ export const getList = query({
     };
   }
 });
+
+export const getSuggestedLists = query({
+  args: {},
+  handler: async (ctx) => {
+    const lists = await ctx.db
+      .query("lists")
+      .withIndex("by_follower_count")
+      .filter((q) => q.eq(q.field("isPublic"), true))
+      .order("desc")
+      .take(3);
+
+    return lists.map((list) => ({
+      id: list._id,
+      title: list.name,
+      description: list.description,
+      imageUrl: list.imageUrl || "/images/default-list.jpg",
+      href: `/list/${list._id}`
+    }));
+  }
+});

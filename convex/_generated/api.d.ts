@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as activities from "../activities.js";
+import type * as defaultLists from "../defaultLists.js";
 import type * as games from "../games.js";
 import type * as lists from "../lists.js";
 import type * as movies from "../movies.js";
@@ -23,6 +24,7 @@ import type * as series from "../series.js";
 import type * as userActivities from "../userActivities.js";
 import type * as userEvents from "../userEvents.js";
 import type * as users from "../users.js";
+import type * as watch from "../watch.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -34,6 +36,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
+  defaultLists: typeof defaultLists;
   games: typeof games;
   lists: typeof lists;
   movies: typeof movies;
@@ -43,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   userActivities: typeof userActivities;
   userEvents: typeof userEvents;
   users: typeof users;
+  watch: typeof watch;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
