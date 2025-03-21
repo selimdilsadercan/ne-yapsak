@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Gamepad2, Search, Plus, Star } from "lucide-react";
+import { Search, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -43,7 +43,7 @@ export default function GamesPage() {
             {games?.map((game: Doc<"games">) => (
               <Card key={game._id} className="overflow-hidden">
                 <div className="relative aspect-[2/3]">
-                  <Image src={game.imageUrl} alt={game.title} fill className="object-cover" />
+                  <Image src={game.imageUrl || ""} alt={game.title} fill className="object-cover" />
                 </div>
                 <CardContent className="p-4">
                   <div className="space-y-2">

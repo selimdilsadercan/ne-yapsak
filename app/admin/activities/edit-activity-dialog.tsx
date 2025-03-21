@@ -49,7 +49,7 @@ export function EditActivityDialog({ activity, open, onOpenChange }: EditActivit
       toast.success("Activity updated successfully");
       onOpenChange(false);
     } catch (error) {
-      toast.error("Failed to update activity");
+      toast.error(`Failed to update activity: ${error}`);
     }
   }
 

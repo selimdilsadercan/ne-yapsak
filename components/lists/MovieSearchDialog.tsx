@@ -9,10 +9,10 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "react-hot-toast";
-import { PlusIcon } from "lucide-react";
+import { Film, PlusIcon } from "lucide-react";
 import Image from "next/image";
 
-function MovieSearchDialog() {
+export function MovieSearchDialog() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -49,7 +49,9 @@ function MovieSearchDialog() {
         description: movie.overview,
         imageUrl: getTMDBImageUrl(movie.poster_path),
         rating: movie.vote_average,
-        userId: user.id
+        userId: user.id,
+        duration: 0, // Default duration since TMDB API doesn't provide it in search results
+        genres: [] // Default empty genres since TMDB API doesn't provide it in search results
       });
       toast.success("Movie added to your list!");
     } catch (error) {
@@ -61,7 +63,10 @@ function MovieSearchDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Search Movies</Button>
+        <Button variant="outline">
+          <Film className="w-4 h-4 mr-2" />
+          Search Movies
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
@@ -78,15 +83,39 @@ function MovieSearchDialog() {
             Search
           </Button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {searchResults.map((movie) => (
-            <div key={movie.id} className="relative group">
-              <Image src={getTMDBImageUrl(movie.poster_path)} alt={movie.title} className="w-full h-auto rounded-lg" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
-                <h3 className="font-semibold text-center mb-2">{movie.title}</h3>
-                <p className="text-sm mb-2">{new Date(movie.release_date).getFullYear()}</p>
-                <p className="text-sm mb-4">Rating: {movie.vote_average.toFixed(1)}</p>
-                <Button size="sm" onClick={() => handleAddMovie(movie)} className="w-full">
+            <div key={movie.id} className="group bg-card hover:bg-accent rounded-lg overflow-hidden transition-colors">
+              {/* Movie Poster */}
+              <div className="relative aspect-[2/3]">
+                <Image
+                  src={getTMDBImageUrl(movie.poster_path) || "/placeholder.png"}
+                  alt={movie.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover"
+                  priority={false}
+                />
+              </div>
+
+              {/* Movie Info */}
+              <div className="p-4 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-lg line-clamp-2 min-h-[3.5rem]">{movie.title}</h3>
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    {movie.release_date && <p className="text-sm">{new Date(movie.release_date).getFullYear()}</p>}
+                    {movie.vote_average > 0 && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm text-yellow-400">★</span>
+                        <span className="text-sm">{movie.vote_average.toFixed(1)}</span>
+                      </div>
+                    )}
+                  </div>
+                  {movie.overview && <p className="text-sm text-muted-foreground line-clamp-2">{movie.overview}</p>}
+                </div>
+
+                {/* Add Button */}
+                <Button size="sm" onClick={() => handleAddMovie(movie)} variant="secondary" className="w-full">
                   <PlusIcon className="w-4 h-4 mr-2" />
                   Add to List
                 </Button>
@@ -98,5 +127,3 @@ function MovieSearchDialog() {
     </Dialog>
   );
 }
-
-export default MovieSearchDialog;

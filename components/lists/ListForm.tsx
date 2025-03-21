@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
@@ -31,15 +31,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface ListFormProps {
-  initialData?: {
-    _id: Id<"lists">;
-    name: string;
-    description?: string;
-    type: string;
-    isPublic: boolean;
-    imageUrl?: string;
-    tags?: string[];
-  };
+  initialData?: Doc<"lists">;
   onSuccess?: () => void;
 }
 
@@ -51,16 +43,15 @@ export function ListForm({ initialData, onSuccess }: ListFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name ?? "",
-      description: initialData?.description ?? "",
-      type: (initialData?.type as (typeof listTypes)[number]) ?? "activities",
-      isPublic: initialData?.isPublic ?? true,
-      imageUrl: initialData?.imageUrl ?? "",
-      tags: initialData?.tags ?? []
+      name: initialData?.name || "",
+      description: initialData?.description || "",
+      type: (initialData?.type as (typeof listTypes)[number]) || "movies",
+      imageUrl: initialData?.imageUrl || "",
+      isPublic: initialData?.isPublic ?? true
     }
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (initialData) {
         await updateList({
@@ -69,13 +60,17 @@ export function ListForm({ initialData, onSuccess }: ListFormProps) {
         });
         toast.success("List updated successfully");
       } else {
-        const listId = await createList(values);
+        await createList(values);
         toast.success("List created successfully");
-        router.push(`/lists/${listId}`);
       }
-      onSuccess?.();
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push("/admin/lists");
+      }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(`Failed to ${initialData ? "update" : "create"} list: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 

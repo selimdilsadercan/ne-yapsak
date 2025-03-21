@@ -69,8 +69,7 @@ const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }: { row: Row<User> }) => {
-      const user = row.original;
+    cell: () => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -45,7 +45,7 @@ export function ListCard({ list, isOwner, onEdit }: ListCardProps) {
       await deleteList({ listId: list._id });
       toast.success("List deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete the list. Please try again.");
+      toast.error(`Failed to delete the list: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
     }
   };
 

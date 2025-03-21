@@ -22,7 +22,7 @@ export async function searchMovies(query: string): Promise<TMDBSearchResponse> {
   const response = await fetch(
     `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`
   );
-  
+
   if (!response.ok) {
     throw new Error("Failed to search movies");
   }

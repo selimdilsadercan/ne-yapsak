@@ -13,6 +13,8 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import toast from "react-hot-toast";
 import { Id } from "@/convex/_generated/dataModel";
+import { EditListDialog } from "@/components/lists/EditListDialog";
+import Image from "next/image";
 
 // Define the item types and their properties
 const itemTypes = [
@@ -24,7 +26,11 @@ const itemTypes = [
 ];
 
 // Columns for the items table
-const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<{
+  name: string;
+  type: string;
+  addedAt: number;
+}>[] = [
   {
     accessorKey: "name",
     header: "Name"
@@ -51,6 +57,7 @@ export default function ListDetailPage() {
   const listId = params.id as Id<"lists">;
   const list = useQuery(api.lists.getList, { listId });
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState(itemTypes[0].id);
 
@@ -62,8 +69,7 @@ export default function ListDetailPage() {
   const activities = useQuery(api.search.searchActivities, { query: searchTerm }) || [];
 
   const addItemToList = useMutation(api.lists.addItemToList);
-
-  const handleAddItem = async (item: any, type: string) => {
+  const handleAddItem = async (item: { _id: Id<"movies" | "series" | "games" | "places" | "activities"> }, type: string) => {
     try {
       await addItemToList({
         listId,
@@ -74,7 +80,7 @@ export default function ListDetailPage() {
       toast.success("Item added to list");
       setIsAddDialogOpen(false);
     } catch (error) {
-      toast.error("Failed to add item to list");
+      toast.error(`Failed to add item to list: ${error}`);
     }
   };
 
@@ -117,7 +123,7 @@ export default function ListDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
             Edit List
           </Button>
@@ -146,17 +152,31 @@ export default function ListDetailPage() {
                   {itemTypes.map((type) => (
                     <TabsContent key={type.id} value={type.id} className="py-4">
                       <div className="divide-y">
-                        {itemsByType[type.id as keyof typeof itemsByType]?.map((item: any) => (
-                          <div key={item._id} className="flex items-center justify-between py-2">
-                            <div>
-                              <p className="font-medium">{item.name}</p>
-                              {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
+                        {itemsByType[type.id as keyof typeof itemsByType]?.map((item) => {
+                          let displayName = "";
+                          let displayDescription = "";
+
+                          // Type guard for different content types
+                          if (type.contentType === "movie" && "title" in item) {
+                            displayName = item.title;
+                            displayDescription = item.description || "";
+                          } else if ("name" in item) {
+                            displayName = item.name;
+                            displayDescription = item.description || "";
+                          }
+
+                          return (
+                            <div key={item._id} className="flex items-center justify-between py-2">
+                              <div>
+                                <p className="font-medium">{displayName}</p>
+                                {displayDescription && <p className="text-sm text-muted-foreground">{displayDescription}</p>}
+                              </div>
+                              <Button variant="ghost" onClick={() => handleAddItem({ _id: item._id }, type.contentType)}>
+                                <Plus className="h-4 w-4" />
+                              </Button>
                             </div>
-                            <Button variant="ghost" onClick={() => handleAddItem(item, type.contentType)}>
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </TabsContent>
                   ))}
@@ -169,7 +189,7 @@ export default function ListDetailPage() {
 
       {list.imageUrl && (
         <div className="relative w-full h-[200px] rounded-lg overflow-hidden">
-          <img src={list.imageUrl} alt={list.name} className="object-cover w-full h-full" />
+          <Image src={list.imageUrl} alt={list.name} fill className="object-cover" />
         </div>
       )}
 
@@ -183,6 +203,8 @@ export default function ListDetailPage() {
           }}
         />
       </div>
+
+      {isEditDialogOpen && <EditListDialog list={list} open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} />}
     </div>
   );
 }

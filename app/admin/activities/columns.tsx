@@ -3,8 +3,6 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EditActivityDialog } from "./edit-activity-dialog";
-import { DeleteActivityDialog } from "./delete-activity-dialog";
 
 export type Activity = {
   _id: Id<"activities">;

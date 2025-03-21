@@ -60,7 +60,7 @@ export function GameCard({ userGame, onUpdate }: GameCardProps) {
       {/* Game Cover */}
       <div className="absolute inset-0">
         <Image
-          src={userGame.game.imageUrl}
+          src={userGame.game.imageUrl || "/placeholder.png"}
           alt={userGame.game.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -86,7 +86,7 @@ export function GameCard({ userGame, onUpdate }: GameCardProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {userGame.game.rating > 0 && (
+            {typeof userGame.game.rating === "number" && userGame.game.rating > 0 && (
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-400" />
                 <span className="text-sm text-white">{userGame.game.rating.toFixed(1)}</span>

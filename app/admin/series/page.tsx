@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tv, Search, Plus, Star } from "lucide-react";
+import { Search, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -43,23 +43,23 @@ export default function SeriesPage() {
             {series?.map((show: Doc<"series">) => (
               <Card key={show._id} className="overflow-hidden">
                 <div className="relative aspect-[2/3]">
-                  <Image src={show.imageUrl || "/placeholder.png"} alt={show.title} fill className="object-cover" />
+                  <Image src={show.posterUrl || "/placeholder.png"} alt={show.name} fill className="object-cover" />
                 </div>
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold line-clamp-1">{show.title}</h3>
+                      <h3 className="font-semibold line-clamp-1">{show.name}</h3>
                       <span className="text-sm text-muted-foreground">
-                        {show.startYear}
-                        {show.endYear ? `-${show.endYear}` : "-Present"}
+                        {new Date(show.firstAirDate).getFullYear()}
+                        {show.status === "Ended" ? "-Ended" : "-Present"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <Star className="w-4 h-4 text-yellow-400" />
-                        <span>N/A</span>
+                        <span>{show.rating?.toFixed(1) || "N/A"}</span>
                       </div>
-                      <span>{show.totalSeasons} Seasons</span>
+                      <span>{show.numberOfSeasons} Seasons</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm" className="w-full">

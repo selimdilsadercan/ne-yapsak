@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,7 +48,7 @@ export function AddActivityDialog({ open, onOpenChange }: AddActivityDialogProps
       form.reset();
       onOpenChange(false);
     } catch (error) {
-      toast.error("Failed to add activity");
+      toast.error(`Failed to add activity: ${error}`);
     }
   }
 

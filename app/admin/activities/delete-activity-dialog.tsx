@@ -20,7 +20,7 @@ export function DeleteActivityDialog({ activity, open, onOpenChange }: DeleteAct
       toast.success("Activity deleted successfully");
       onOpenChange(false);
     } catch (error) {
-      toast.error("Failed to delete activity");
+      toast.error(`Failed to delete activity: ${error}`);
     }
   }
 
@@ -29,7 +29,7 @@ export function DeleteActivityDialog({ activity, open, onOpenChange }: DeleteAct
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete Activity</DialogTitle>
-          <DialogDescription>Are you sure you want to delete "{activity.name}"? This action cannot be undone.</DialogDescription>
+          <DialogDescription>Are you sure you want to delete &quot;{activity.name}&quot;? This action cannot be undone.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

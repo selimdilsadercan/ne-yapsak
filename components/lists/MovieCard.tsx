@@ -3,7 +3,6 @@
 import { Doc } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Bookmark } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
