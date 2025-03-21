@@ -30,11 +30,11 @@ export const addGameFromRAWG = mutation({
   args: {
     rawgId: v.number(),
     title: v.string(),
-    year: v.number(),
     description: v.string(),
-    imageUrl: v.string(),
-    rating: v.number(),
+    imageUrl: v.optional(v.string()),
     metacritic: v.union(v.number(), v.null()),
+    rating: v.optional(v.number()),
+    year: v.number(),
     userId: v.string()
   },
   handler: async (ctx, args) => {
@@ -53,11 +53,11 @@ export const addGameFromRAWG = mutation({
       gameId = await ctx.db.insert("games", {
         rawgId: args.rawgId,
         title: args.title,
-        year: args.year,
         description: args.description,
         imageUrl: args.imageUrl,
+        metacritic: args.metacritic,
         rating: args.rating,
-        metacritic: args.metacritic
+        year: args.year
       });
     }
 
@@ -108,37 +108,37 @@ export const removeUserGame = mutation({
 });
 
 // Admin functions
-export const getAllGames = query({
+export const getAll = query({
   handler: async (ctx) => {
     return await ctx.db.query("games").collect();
   }
 });
 
-export const createGame = mutation({
+export const create = mutation({
   args: {
     rawgId: v.number(),
     title: v.string(),
-    year: v.number(),
     description: v.string(),
-    imageUrl: v.string(),
-    rating: v.number(),
-    metacritic: v.union(v.number(), v.null())
+    imageUrl: v.optional(v.string()),
+    metacritic: v.union(v.number(), v.null()),
+    rating: v.optional(v.number()),
+    year: v.number()
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("games", args);
   }
 });
 
-export const updateGame = mutation({
+export const update = mutation({
   args: {
     id: v.id("games"),
     rawgId: v.number(),
     title: v.string(),
-    year: v.number(),
     description: v.string(),
-    imageUrl: v.string(),
-    rating: v.number(),
-    metacritic: v.union(v.number(), v.null())
+    imageUrl: v.optional(v.string()),
+    metacritic: v.union(v.number(), v.null()),
+    rating: v.optional(v.number()),
+    year: v.number()
   },
   handler: async (ctx, args) => {
     const { id, ...data } = args;
@@ -152,5 +152,16 @@ export const deleteGame = mutation({
   },
   handler: async (ctx, args) => {
     return await ctx.db.delete(args.id);
+  }
+});
+
+export const search = query({
+  args: { query: v.string() },
+  handler: async (ctx, args) => {
+    const games = await ctx.db
+      .query("games")
+      .filter((q) => q.or(q.eq(q.field("title"), args.query), q.eq(q.field("description"), args.query)))
+      .take(10);
+    return games;
   }
 });

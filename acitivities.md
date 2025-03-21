@@ -2,10 +2,10 @@
 
 ## Bir Şeyler İzlemek
 
-- Film
-- Dizi
-- YouTube
-- Belgesel
+- Film: films
+- Dizi: series
+- YouTube: videos
+- Belgesel: videos + films
 - Stand-up
 - Anime
 - Twitch yayını
@@ -47,20 +47,18 @@
 - Dağ / Doğa alanı
 - AVM / Mağaza gezisi
 - Hayvanat bahçesi / Akvaryum
-
-## Sosyal ve Eğlenceli Aktiviteler
-
-- Karaoke yapmak
-- Escape room (kaçış oyunu)
 - Paintball / Lazer tag
+- Escape room (kaçış oyunu)
+- Karaoke'ye gitmek
 - Bowling / Bilardo
+- Kamp yapmak
+
+## Bir Aktivite Yapmak
+
 - Masa tenisi / Air hockey
 - Gece yürüyüşü / Şehir keşfi
 - Fotoğraf çekim turu
 - Kamp ateşi / Mangal
-
-## Hobiler ve Kendine Zaman Ayırma
-
 - Kitap okumak
 - Podcast dinlemek
 - Müzik yapmak / dinlemek
@@ -69,24 +67,17 @@
 - Günlük / Blog yazmak
 - El işi / DIY projeleri
 - Günlük tutmak / Bullet journal
-
-## Dış Mekan Aktiviteleri
-
 - Doğa yürüyüşü / Trekking
 - Bisiklete binmek
 - Spor salonuna gitmek
 - Yüzmek
 - Yoga / Meditasyon
-- Kamp yapmak
 - Balık tutmak
 - Kaykay / Paten sürmek
 - Koşu yapmak
 - Dağa tırmanış / Bouldering
 - Tenis / Badminton / Squash
 - Basketbol / Futbol / Voleybol
-
-## Kendi Kendine Yapılabilecek Aktiviteler
-
 - Yeni bir yemek tarifi denemek
 - Origami / El sanatları yapmak
 - Kod yazmak / Proje geliştirmek
@@ -98,5 +89,3 @@
 - Kendi podcastini kaydetmek
 - Lego / Maket yapmak
 - Çeşitli challenge’lar denemek (24 saat, detox, vs.)
-
-

@@ -156,6 +156,12 @@ export const seedActivities = mutation({
 
       // Bir Etkinliğe Gitmek
       {
+        name: "Stand-up",
+        category: "Bir Etkinliğe Gitmek",
+        iconName: "Mic2",
+        contentType: "event"
+      },
+      {
         name: "Tiyatro",
         category: "Bir Etkinliğe Gitmek",
         iconName: "Theater",
@@ -283,245 +289,239 @@ export const seedActivities = mutation({
         iconName: "Fish",
         contentType: "place"
       },
-
-      // Sosyal ve Eğlenceli Aktiviteler
       {
-        name: "Karaoke yapmak",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
-        iconName: "Mic",
-        contentType: "activity"
+        name: "Paintball / Lazer tag",
+        category: "Bir Yere Gitmek",
+        iconName: "Target",
+        contentType: "place"
       },
       {
         name: "Escape room (kaçış oyunu)",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
+        category: "Bir Yere Gitmek",
         iconName: "KeyRound",
-        contentType: "activity"
+        contentType: "place"
       },
       {
-        name: "Paintball / Lazer tag",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
-        iconName: "Target",
-        contentType: "activity"
+        name: "Karaoke'ye gitmek",
+        category: "Bir Yere Gitmek",
+        iconName: "Mic",
+        contentType: "place"
       },
       {
         name: "Bowling / Bilardo",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
-        iconName: "Bowling",
-        contentType: "activity"
+        category: "Bir Yere Gitmek",
+        iconName: "CircleDot",
+        contentType: "place"
       },
       {
+        name: "Kamp yapmak",
+        category: "Bir Yere Gitmek",
+        iconName: "Tent",
+        contentType: "place"
+      },
+
+      // Bir Aktivite Yapmak
+      {
         name: "Masa tenisi / Air hockey",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
-        iconName: "Dice1",
+        category: "Bir Aktivite Yapmak",
+        iconName: "CircleDot",
         contentType: "activity"
       },
       {
         name: "Gece yürüyüşü / Şehir keşfi",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Moon",
         contentType: "activity"
       },
       {
         name: "Fotoğraf çekim turu",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Camera",
         contentType: "activity"
       },
       {
         name: "Kamp ateşi / Mangal",
-        category: "Sosyal ve Eğlenceli Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Flame",
         contentType: "activity"
       },
-
-      // Hobiler ve Kendine Zaman Ayırma
       {
         name: "Kitap okumak",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Book",
         contentType: "activity"
       },
       {
         name: "Podcast dinlemek",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Headphones",
         contentType: "activity"
       },
       {
         name: "Müzik yapmak / dinlemek",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Music",
         contentType: "activity"
       },
       {
         name: "Çizim / Boyama yapmak",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Palette",
         contentType: "activity"
       },
       {
         name: "Fotoğraf çekmek",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Camera",
         contentType: "activity"
       },
       {
         name: "Günlük / Blog yazmak",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "PenTool",
         contentType: "activity"
       },
       {
         name: "El işi / DIY projeleri",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "Scissors",
         contentType: "activity"
       },
       {
         name: "Günlük tutmak / Bullet journal",
-        category: "Hobiler ve Kendine Zaman Ayırma",
+        category: "Bir Aktivite Yapmak",
         iconName: "ScrollText",
         contentType: "activity"
       },
-
-      // Dış Mekan Aktiviteleri
       {
         name: "Doğa yürüyüşü / Trekking",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Compass",
         contentType: "activity"
       },
       {
         name: "Bisiklete binmek",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Bike",
         contentType: "activity"
       },
       {
         name: "Spor salonuna gitmek",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Dumbbell",
         contentType: "activity"
       },
       {
         name: "Yüzmek",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Droplets",
         contentType: "activity"
       },
       {
         name: "Yoga / Meditasyon",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Flower2",
         contentType: "activity"
       },
       {
-        name: "Kamp yapmak",
-        category: "Dış Mekan Aktiviteleri",
-        iconName: "Tent",
-        contentType: "activity"
-      },
-      {
         name: "Balık tutmak",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Fish",
         contentType: "activity"
       },
       {
         name: "Kaykay / Paten sürmek",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "PersonStanding",
         contentType: "activity"
       },
       {
         name: "Koşu yapmak",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "PersonStanding",
         contentType: "activity"
       },
       {
         name: "Dağa tırmanış / Bouldering",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Mountain",
         contentType: "activity"
       },
       {
         name: "Tenis / Badminton / Squash",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "CircleDot",
         contentType: "activity"
       },
       {
         name: "Basketbol / Futbol / Voleybol",
-        category: "Dış Mekan Aktiviteleri",
+        category: "Bir Aktivite Yapmak",
         iconName: "Trophy",
         contentType: "activity"
       },
-
-      // Kendi Kendine Yapılabilecek Aktiviteler
       {
         name: "Yeni bir yemek tarifi denemek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "ChefHat",
         contentType: "activity"
       },
       {
         name: "Origami / El sanatları yapmak",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Scissors",
         contentType: "activity"
       },
       {
         name: "Kod yazmak / Proje geliştirmek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Code2",
         contentType: "activity"
       },
       {
         name: "Yeni bir dil öğrenmek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Languages",
         contentType: "activity"
       },
       {
         name: "Puzzle / Yapboz çözmek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Puzzle",
         contentType: "activity"
       },
       {
         name: "Enstrüman çalmayı öğrenmek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Piano",
         contentType: "activity"
       },
       {
         name: "Kendi hikayeni yazmak",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "FileText",
         contentType: "activity"
       },
       {
         name: "Astroloji / Tarot / Fal bakmak",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Stars",
         contentType: "activity"
       },
       {
         name: "Kendi podcastini kaydetmek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Podcast",
         contentType: "activity"
       },
       {
         name: "Lego / Maket yapmak",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Blocks",
         contentType: "activity"
       },
       {
         name: "Çeşitli challenge'lar denemek",
-        category: "Kendi Kendine Yapılabilecek Aktiviteler",
+        category: "Bir Aktivite Yapmak",
         iconName: "Medal",
         contentType: "activity"
       }
@@ -626,7 +626,7 @@ export const getCombinedFeed = query({
         return {
           type: "series" as const,
           id: userSeriesItem._id,
-          name: seriesDetail?.title || "Unknown Series",
+          name: seriesDetail?.name || "Unknown Series",
           iconName: "Tv",
           createdAt: userSeriesItem._creationTime,
           series: seriesDetail,
@@ -668,19 +668,37 @@ export const getRandomItems = query({
         name: movie.title,
         iconName: "Film",
         contentType: "movie",
-        imageUrl: movie.imageUrl
+        posterUrl: movie.imageUrl
       })),
       ...randomSeries.map((series) => ({
         type: "series" as const,
-        name: series.title,
+        name: series.name,
         iconName: "Tv",
         contentType: "series",
-        imageUrl: series.imageUrl
+        posterUrl: series.posterUrl
       }))
     ];
 
     // Shuffle the combined array and limit to requested size
     return combinedItems.sort(() => Math.random() - 0.5).slice(0, args.limit);
+  }
+});
+
+// Add a search function for activities
+export const searchActivities = query({
+  args: {
+    query: v.string()
+  },
+  handler: async (ctx, args) => {
+    const { query } = args;
+    const lowerQuery = query.toLowerCase();
+
+    const activities = await ctx.db.query("activities").collect();
+
+    // Filter activities where name or description contains the query
+    return activities
+      .filter((activity) => activity.name.toLowerCase().includes(lowerQuery) || (activity.description?.toLowerCase().includes(lowerQuery) ?? false))
+      .slice(0, 10);
   }
 });
 

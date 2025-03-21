@@ -6,7 +6,8 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     image: v.string(),
-    clerkId: v.string()
+    clerkId: v.string(),
+    role: v.optional(v.string())
   }).index("by_clerk_id", ["clerkId"]),
 
   activities: defineTable({
@@ -20,14 +21,16 @@ export default defineSchema({
 
   movies: defineTable({
     title: v.string(),
-    year: v.number(),
-    genres: v.array(v.string()),
     duration: v.number(),
-    imageUrl: v.optional(v.string()),
-    description: v.optional(v.string()),
-    rating: v.optional(v.number()),
-    tmdbId: v.optional(v.number())
-  }),
+    genres: v.array(v.string()),
+    imageUrl: v.string(),
+    rating: v.number(),
+    tmdbId: v.number(),
+    year: v.number(),
+    description: v.optional(v.string())
+  })
+    .index("by_title", ["title"])
+    .index("by_tmdbId", ["tmdbId"]),
 
   userMovies: defineTable({
     userId: v.id("users"),
@@ -43,15 +46,23 @@ export default defineSchema({
     .index("by_user_and_movie", ["userId", "movieId"]),
 
   series: defineTable({
-    title: v.string(),
-    startYear: v.number(),
-    endYear: v.optional(v.number()),
-    genres: v.array(v.string()),
-    imageUrl: v.optional(v.string()),
+    name: v.string(),
     description: v.optional(v.string()),
+    firstAirDate: v.number(),
+    posterUrl: v.optional(v.string()),
+    backdropUrl: v.optional(v.string()),
+    tmdbId: v.number(),
+    imdbId: v.optional(v.string()),
+    numberOfSeasons: v.number(),
+    numberOfEpisodes: v.number(),
+    genres: v.array(v.string()),
+    rating: v.optional(v.number()),
+    voteCount: v.optional(v.number()),
+    popularity: v.optional(v.number()),
     status: v.string(),
-    totalSeasons: v.number()
-  }),
+    tagline: v.optional(v.string()),
+    trailerUrl: v.optional(v.string())
+  }).index("by_tmdb_id", ["tmdbId"]),
 
   userSeries: defineTable({
     userId: v.id("users"),
@@ -70,13 +81,13 @@ export default defineSchema({
     .index("by_user_and_series", ["userId", "seriesId"]),
 
   games: defineTable({
-    rawgId: v.number(),
     title: v.string(),
-    year: v.number(),
-    description: v.string(),
-    imageUrl: v.string(),
-    rating: v.number(),
-    metacritic: v.union(v.number(), v.null())
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    metacritic: v.union(v.number(), v.null()),
+    rating: v.optional(v.number()),
+    rawgId: v.number(),
+    year: v.number()
   }).index("by_rawg_id", ["rawgId"]),
 
   userGames: defineTable({
@@ -93,18 +104,22 @@ export default defineSchema({
 
   places: defineTable({
     name: v.string(),
-    address: v.string(),
     description: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
-    rating: v.optional(v.number()),
-    priceRange: v.optional(v.string()),
+    address: v.string(),
+    city: v.string(),
+    country: v.string(),
+    latitude: v.number(),
+    longitude: v.number(),
     type: v.string(),
-    googlePlaceId: v.string(),
-    coordinates: v.object({
-      lat: v.number(),
-      lng: v.number()
-    })
-  }).index("by_google_place_id", ["googlePlaceId"]),
+    rating: v.optional(v.number()),
+    ratingCount: v.optional(v.number()),
+    imageUrl: v.optional(v.string()),
+    website: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    openingHours: v.optional(v.string()),
+    priceLevel: v.optional(v.string()),
+    tags: v.optional(v.array(v.string()))
+  }),
 
   userPlaces: defineTable({
     userId: v.id("users"),
@@ -143,5 +158,42 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_activity", ["activityId"])
-    .index("by_user_and_activity", ["userId", "activityId"])
+    .index("by_user_and_activity", ["userId", "activityId"]),
+
+  lists: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    type: v.string(),
+    isPublic: v.boolean(),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    imageUrl: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    itemCount: v.number(),
+    followerCount: v.number()
+  })
+    .index("by_creator", ["createdBy"])
+    .index("by_type", ["type"]),
+
+  listItems: defineTable({
+    listId: v.id("lists"),
+    itemId: v.string(),
+    itemType: v.string(),
+    order: v.number(),
+    notes: v.optional(v.string()),
+    addedBy: v.string(),
+    addedAt: v.number()
+  })
+    .index("by_list", ["listId"])
+    .index("by_item", ["itemId"])
+    .index("by_list_and_order", ["listId", "order"]),
+
+  listFollowers: defineTable({
+    listId: v.id("lists"),
+    userId: v.string(),
+    followedAt: v.number()
+  })
+    .index("by_list", ["listId"])
+    .index("by_list_and_user", ["listId", "userId"])
 });

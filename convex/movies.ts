@@ -49,167 +49,16 @@ export const updateUserMovieStatus = mutation({
   }
 });
 
-export const seedMovies = mutation({
-  args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    const movies = [
-      {
-        title: "Incendies",
-        year: 2010,
-        rating: 8.3,
-        imageUrl: "https://example.com/incendies.jpg",
-        description: "A mother's last wishes send twins Jeanne and Simon on a journey to Middle East in search of their tangled roots.",
-        genres: ["Drama", "Mystery", "War"],
-        duration: 131
-      },
-      {
-        title: "Anora",
-        year: 2024,
-        rating: 7.6,
-        imageUrl: "https://example.com/anora.jpg",
-        description: "A young escort from Brooklyn meets and impulsively marries the son of a Russian immigrant.",
-        genres: ["Drama"],
-        duration: 120
-      },
-      {
-        title: "The Devil's Advocate",
-        year: 1997,
-        rating: 7.5,
-        imageUrl: "https://example.com/devils-advocate.jpg",
-        description: "Aspiring Florida defense lawyer Kevin Lomax accepts a job at a New York law firm.",
-        genres: ["Drama", "Mystery", "Thriller"],
-        duration: 144
-      },
-      {
-        title: "Bonnie and Clyde",
-        year: 1967,
-        rating: 7.7,
-        imageUrl: "https://example.com/bonnie-and-clyde.jpg",
-        description: "In the 1930s, bored waitress Bonnie Parker falls in love with an ex-con named Clyde Barrow.",
-        genres: ["Biography", "Crime", "Drama"],
-        duration: 111
-      },
-      {
-        title: "Saving Private Ryan",
-        year: 1998,
-        rating: 8.6,
-        imageUrl: "https://example.com/saving-private-ryan.jpg",
-        description: "As U.S. troops storm the beaches of Normandy, three brothers lie dead on the battlefield, with a fourth trapped behind enemy lines.",
-        genres: ["Drama", "War"],
-        duration: 169
-      },
-      {
-        title: "Kingdom of Heaven",
-        year: 2005,
-        rating: 7.3,
-        imageUrl: "https://example.com/kingdom-of-heaven.jpg",
-        description: "After his wife dies, a blacksmith named Balian is thrust into royalty, political intrigue and bloody holy wars during the Crusades.",
-        genres: ["Action", "Drama", "History"],
-        duration: 144
-      },
-      {
-        title: "Good Will Hunting",
-        year: 1997,
-        rating: 8.3,
-        imageUrl: "https://example.com/good-will-hunting.jpg",
-        description: "Headstrong yet aimless, Will Hunting has a genius-level IQ but chooses to work as a janitor at MIT.",
-        genres: ["Drama", "Romance"],
-        duration: 126
-      },
-      {
-        title: "Midsommar",
-        year: 2019,
-        rating: 7.1,
-        imageUrl: "https://example.com/midsommar.jpg",
-        description: "Several friends travel to Sweden to study as anthropologists a summer festival that is held every 90 years.",
-        genres: ["Drama", "Horror", "Mystery"],
-        duration: 148
-      },
-      {
-        title: "Three Billboards Outside Ebbing, Missouri",
-        year: 2017,
-        rating: 8.1,
-        imageUrl: "https://example.com/three-billboards.jpg",
-        description: "After seven months have passed without a culprit in her daughter's murder case, Mildred Hayes makes a bold move.",
-        genres: ["Comedy", "Crime", "Drama"],
-        duration: 115
-      },
-      {
-        title: "Titane",
-        year: 2021,
-        rating: 6.5,
-        imageUrl: "https://example.com/titane.jpg",
-        description: "A woman with a metal plate in her head from a childhood car accident embarks on a bizarre journey.",
-        genres: ["Drama", "Horror", "Sci-Fi"],
-        duration: 108
-      },
-      {
-        title: "Gone Girl",
-        year: 2014,
-        rating: 8.1,
-        imageUrl: "https://example.com/gone-girl.jpg",
-        description: "With his wife's disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him.",
-        genres: ["Drama", "Mystery", "Thriller"],
-        duration: 149
-      },
-      {
-        title: "Perfume: The Story of a Murderer",
-        year: 2006,
-        rating: 7.5,
-        imageUrl: "https://example.com/perfume.jpg",
-        description: "Jean-Baptiste Grenouille, born in the stench of 18th century Paris, develops a superior olfactory sense.",
-        genres: ["Crime", "Drama", "Fantasy"],
-        duration: 147
-      }
-    ];
-
-    // Insert movies and create user associations
-    for (const movie of movies) {
-      // Check if movie already exists
-      const existingMovie = await ctx.db
-        .query("movies")
-        .filter((q) => q.eq(q.field("title"), movie.title))
-        .first();
-
-      let movieId: Id<"movies">;
-
-      if (!existingMovie) {
-        // Insert new movie
-        movieId = await ctx.db.insert("movies", movie);
-      } else {
-        movieId = existingMovie._id;
-      }
-
-      // Create user movie association if it doesn't exist
-      const existingUserMovie = await ctx.db
-        .query("userMovies")
-        .filter((q) => q.and(q.eq(q.field("userId"), args.userId), q.eq(q.field("movieId"), movieId)))
-        .first();
-
-      if (!existingUserMovie) {
-        const now = Date.now();
-        await ctx.db.insert("userMovies", {
-          userId: args.userId,
-          movieId,
-          status: "want_to_watch",
-          createdAt: now,
-          updatedAt: now
-        });
-      }
-    }
-
-    return { success: true };
-  }
-});
-
 export const addMovieFromTMDB = mutation({
   args: {
     tmdbId: v.number(),
     title: v.string(),
     year: v.number(),
-    description: v.string(),
+    duration: v.number(),
     imageUrl: v.string(),
     rating: v.number(),
+    genres: v.array(v.string()),
+    description: v.optional(v.string()),
     userId: v.string()
   },
   handler: async (ctx, args) => {
@@ -236,21 +85,24 @@ export const addMovieFromTMDB = mutation({
       movieId = await ctx.db.insert("movies", {
         tmdbId: args.tmdbId,
         title: args.title,
-        year: args.year,
-        description: args.description,
+        duration: args.duration,
+        genres: args.genres,
         imageUrl: args.imageUrl,
         rating: args.rating,
-        genres: [], // We could fetch genres from TMDB if needed
-        duration: 0 // We could fetch duration from TMDB if needed
+        year: args.year,
+        description: args.description
       });
     } else {
       // Update existing movie with TMDB data if it doesn't have tmdbId
       if (!existingMovie.tmdbId) {
         await ctx.db.patch(existingMovie._id, {
           tmdbId: args.tmdbId,
-          description: args.description,
+          duration: args.duration,
           imageUrl: args.imageUrl,
-          rating: args.rating
+          rating: args.rating,
+          year: args.year,
+          genres: args.genres,
+          description: args.description
         });
       }
       movieId = existingMovie._id;
@@ -288,13 +140,13 @@ export const getAllMovies = query({
 export const createMovie = mutation({
   args: {
     title: v.string(),
-    year: v.number(),
-    genres: v.array(v.string()),
     duration: v.number(),
-    imageUrl: v.optional(v.string()),
-    description: v.optional(v.string()),
-    rating: v.optional(v.number()),
-    tmdbId: v.optional(v.number())
+    genres: v.array(v.string()),
+    imageUrl: v.string(),
+    rating: v.number(),
+    tmdbId: v.number(),
+    year: v.number(),
+    description: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("movies", args);
@@ -305,13 +157,13 @@ export const updateMovie = mutation({
   args: {
     id: v.id("movies"),
     title: v.string(),
-    year: v.number(),
-    genres: v.array(v.string()),
     duration: v.number(),
-    imageUrl: v.optional(v.string()),
-    description: v.optional(v.string()),
-    rating: v.optional(v.number()),
-    tmdbId: v.optional(v.number())
+    genres: v.array(v.string()),
+    imageUrl: v.string(),
+    rating: v.number(),
+    tmdbId: v.number(),
+    year: v.number(),
+    description: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     const { id, ...data } = args;
@@ -325,5 +177,19 @@ export const deleteMovie = mutation({
   },
   handler: async (ctx, args) => {
     return await ctx.db.delete(args.id);
+  }
+});
+
+export const search = query({
+  args: {
+    query: v.string()
+  },
+  handler: async (ctx, args) => {
+    const movies = await ctx.db
+      .query("movies")
+      .filter((q) => q.eq(q.field("title"), args.query))
+      .take(10);
+
+    return movies;
   }
 });

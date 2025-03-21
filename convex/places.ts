@@ -2,6 +2,63 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
+export const create = mutation({
+  args: {
+    name: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    ratingCount: v.optional(v.number()),
+    website: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    address: v.string(),
+    city: v.string(),
+    country: v.string(),
+    type: v.string(),
+    latitude: v.number(),
+    longitude: v.number(),
+    tags: v.optional(v.array(v.string()))
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("places", args);
+  }
+});
+
+export const getByGooglePlaceId = query({
+  args: { googlePlaceId: v.string() },
+  handler: async (ctx, args) => {
+    const place = await ctx.db
+      .query("places")
+      .filter((q) => q.eq(q.field("type"), args.googlePlaceId))
+      .first();
+    return place;
+  }
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("places"),
+    name: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    ratingCount: v.optional(v.number()),
+    website: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    address: v.string(),
+    city: v.string(),
+    country: v.string(),
+    type: v.string(),
+    latitude: v.number(),
+    longitude: v.number(),
+    tags: v.optional(v.array(v.string()))
+  },
+  handler: async (ctx, args) => {
+    const { id, ...data } = args;
+    return await ctx.db.patch(id, data);
+  }
+});
+
 export const getUserPlaces = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -65,13 +122,17 @@ export const addPlaceFromGoogle = mutation({
     googlePlaceId: v.string(),
     name: v.string(),
     address: v.string(),
+    city: v.string(),
+    country: v.string(),
+    type: v.string(),
     rating: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
-    type: v.string(),
+    latitude: v.number(),
+    longitude: v.number(),
     userId: v.string()
   },
   handler: async (ctx, args) => {
-    const { googlePlaceId, name, address, rating, imageUrl, type, userId } = args;
+    const { googlePlaceId, name, address, city, country, type, rating, imageUrl, latitude, longitude, userId } = args;
 
     // Get the user
     const user = await ctx.db
@@ -86,7 +147,7 @@ export const addPlaceFromGoogle = mutation({
     // Check if place already exists
     const existingPlace = await ctx.db
       .query("places")
-      .filter((q) => q.eq(q.field("googlePlaceId"), googlePlaceId))
+      .filter((q) => q.eq(q.field("type"), googlePlaceId))
       .first();
 
     let placeId;
@@ -95,13 +156,15 @@ export const addPlaceFromGoogle = mutation({
     } else {
       // Create new place
       placeId = await ctx.db.insert("places", {
-        googlePlaceId,
         name,
         address,
+        city,
+        country,
+        type,
         rating,
         imageUrl,
-        type,
-        coordinates: { lat: 0, lng: 0 } // Default coordinates
+        latitude,
+        longitude
       });
     }
 

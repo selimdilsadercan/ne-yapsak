@@ -48,3 +48,14 @@ export const getById = query({
     return await ctx.db.get(args.userId);
   }
 });
+
+export const getAll = query({
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    return users.map((user) => ({
+      ...user,
+      role: user.role || "user", // Default role if not set
+      createdAt: user._creationTime
+    }));
+  }
+});

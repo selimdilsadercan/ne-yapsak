@@ -17,8 +17,8 @@ const routes = [
     icon: Compass
   },
   {
-    href: "/lists",
-    label: "Listeler",
+    href: "/library",
+    label: "Kitaplığın",
     icon: ListTodo
   },
   {
