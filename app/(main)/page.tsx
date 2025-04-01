@@ -2,21 +2,29 @@
 
 import { ListCard } from "@/components/ListCard";
 import { DefaultListCard } from "@/components/DefaultListCard";
+import { ExperienceCard } from "@/components/ExperienceCard";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Film, Gamepad2, MapPin, PartyPopper, Activity } from "lucide-react";
+import { Film, Gamepad2, MapPin, PartyPopper, Activity, Sparkles } from "lucide-react";
 
 const defaultLists = [
   {
+    id: "experience",
+    title: "Yeni Bir Şey Deneyimlemek",
+    description: "Yeni deneyimler",
+    icon: Sparkles,
+    href: "/list?type=experience"
+  },
+  {
     id: "watch",
-    title: "Bir Şeyler İzlemek",
+    title: "Bir Şey İzlemek",
     description: "Film ve diziler",
     icon: Film,
     href: "/list?type=watch"
   },
   {
     id: "game",
-    title: "Bir Şeyler Oynamak",
+    title: "Bir Şey Oynamak",
     description: "Video oyunları",
     icon: Gamepad2,
     href: "/list?type=game"
@@ -46,8 +54,9 @@ const defaultLists = [
 
 function HomePage() {
   const suggestedLists = useQuery(api.lists.getSuggestedLists);
+  const experiences = useQuery(api.experiences.getAll);
 
-  if (!suggestedLists) {
+  if (!suggestedLists || !experiences) {
     return (
       <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
         <h1 className="text-2xl font-bold">Yükleniyor...</h1>
@@ -66,6 +75,27 @@ function HomePage() {
           ))}
         </div>
       </section>
+      {/* Experiences Section */}
+      {experiences.length > 0 && (
+        <section>
+          <h2 className="mb-6 text-2xl font-bold">Bir Şeyler Denemek</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {experiences.map((experience) => (
+              <ExperienceCard
+                key={experience._id}
+                id={experience._id}
+                name={experience.name}
+                description={experience.description}
+                imageUrl={experience.imageUrl}
+                location={experience.location}
+                price={experience.price}
+                rating={experience.rating}
+                reviewCount={experience.reviewCount}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Suggested Lists Section */}
       {suggestedLists.length > 0 && (

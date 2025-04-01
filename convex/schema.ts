@@ -196,5 +196,17 @@ export default defineSchema({
     followedAt: v.number()
   })
     .index("by_list", ["listId"])
-    .index("by_list_and_user", ["listId", "userId"])
+    .index("by_list_and_user", ["listId", "userId"]),
+
+  experiences: defineTable({
+    name: v.string(),
+    description: v.string(),
+    imageUrl: v.string(),
+    type: v.string(),
+    location: v.string(),
+    price: v.number(),
+    rating: v.number(),
+    reviewCount: v.number(),
+    isActive: v.boolean()
+  }).index("by_type", ["type"])
 });

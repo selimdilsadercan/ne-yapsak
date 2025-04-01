@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as activities from "../activities.js";
 import type * as defaultLists from "../defaultLists.js";
+import type * as experiences from "../experiences.js";
 import type * as games from "../games.js";
 import type * as lists from "../lists.js";
 import type * as movies from "../movies.js";
@@ -37,6 +38,7 @@ import type * as watch from "../watch.js";
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
   defaultLists: typeof defaultLists;
+  experiences: typeof experiences;
   games: typeof games;
   lists: typeof lists;
   movies: typeof movies;

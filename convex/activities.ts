@@ -728,3 +728,25 @@ export const deleteActivity = mutation({
     return await ctx.db.delete(args.id);
   }
 });
+
+export const updateCategories = mutation({
+  handler: async (ctx) => {
+    const activities = await ctx.db.query("activities").collect();
+
+    const categoryMapping = {
+      "Yeni Bir Şey Denemek": "Yeni Bir Şey Deneyimlemek",
+      "Bir Şeyler İzlemek": "Bir Şey İzlemek",
+      "Bir Şeyler Oynamak": "Bir Şey Oynamak",
+      "Bir Yere Gitmek": "Bir Yere Gitmek", // stays the same
+      "Bir Etkinliğe Gitmek": "Bir Etkinliğe Gitmek", // stays the same
+      "Bir Aktivite Yapmak": "Bir Aktivite Yapmak" // stays the same
+    };
+
+    for (const activity of activities) {
+      const newCategory = categoryMapping[activity.category as keyof typeof categoryMapping];
+      if (newCategory) {
+        await ctx.db.patch(activity._id, { category: newCategory });
+      }
+    }
+  }
+});

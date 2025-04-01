@@ -32,20 +32,18 @@ function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t">
-      <div className="container flex items-center justify-around py-2">
+    <nav className="sticky bottom-0 left-0 right-0 z-50 bg-white border-t">
+      <div className="flex items-center justify-around py-3">
         {routes.map((route) => {
           const Icon = route.icon;
+          const isActive = pathname === route.href;
           return (
             <Link
               key={route.href}
               href={route.href}
-              className={cn(
-                "flex flex-col items-center gap-1 p-2 text-sm transition-colors hover:text-primary",
-                pathname === route.href ? "text-primary" : "text-muted-foreground"
-              )}
+              className={cn("flex flex-col items-center gap-1.5 text-xs transition-colors", isActive ? "text-primary" : "text-muted-foreground")}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className={cn("h-6 w-6", isActive && "text-primary")} />
               <span>{route.label}</span>
             </Link>
           );

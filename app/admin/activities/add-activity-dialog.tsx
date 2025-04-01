@@ -86,14 +86,12 @@ export function AddActivityDialog({ open, onOpenChange }: AddActivityDialogProps
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Bir Şeyler İzlemek">Bir Şeyler İzlemek</SelectItem>
-                      <SelectItem value="Bir Şeyler Oynamak">Bir Şeyler Oynamak</SelectItem>
-                      <SelectItem value="Bir Etkinliğe Gitmek">Bir Etkinliğe Gitmek</SelectItem>
-                      <SelectItem value="Bir Yere Gitmek">Bir Yere Gitmek</SelectItem>
-                      <SelectItem value="Sosyal ve Eğlenceli Aktiviteler">Sosyal ve Eğlenceli Aktiviteler</SelectItem>
-                      <SelectItem value="Hobiler ve Kendine Zaman Ayırma">Hobiler ve Kendine Zaman Ayırma</SelectItem>
-                      <SelectItem value="Dış Mekan Aktiviteleri">Dış Mekan Aktiviteleri</SelectItem>
-                      <SelectItem value="Kendi Kendine Yapılabilecek Aktiviteler">Kendi Kendine Yapılabilecek Aktiviteler</SelectItem>
+                      <SelectItem value="Deneyimler">Deneyimler</SelectItem>
+                      <SelectItem value="İzlenecekler">İzlenecekler</SelectItem>
+                      <SelectItem value="Oyunlar">Oyunlar</SelectItem>
+                      <SelectItem value="Mekanlar">Mekanlar</SelectItem>
+                      <SelectItem value="Etkinlikler">Etkinlikler</SelectItem>
+                      <SelectItem value="Aktiviteler">Aktiviteler</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

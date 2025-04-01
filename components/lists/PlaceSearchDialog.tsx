@@ -140,7 +140,7 @@ export function PlaceSearchDialog({ userId }: PlaceSearchDialogProps) {
           Search Places
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Search Places</DialogTitle>
         </DialogHeader>
@@ -161,9 +161,9 @@ export function PlaceSearchDialog({ userId }: PlaceSearchDialogProps) {
               <AlertDescription>Loading Google Maps...</AlertDescription>
             </Alert>
           )}
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {results.map((place) => (
-              <div key={place.place_id} className="flex items-start justify-between p-2 hover:bg-muted rounded-lg group">
+              <div key={place.place_id} className="flex items-start justify-between p-3 hover:bg-muted rounded-lg group">
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium truncate">{place.name}</h4>
                   <p className="text-sm text-muted-foreground truncate">{place.formatted_address}</p>

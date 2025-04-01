@@ -2,13 +2,14 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@clerk/nextjs";
-import { Film, Gamepad2, MapPin, Calendar, Star, Youtube } from "lucide-react";
+import { Film, Gamepad2, MapPin, Calendar, Star, Sparkles } from "lucide-react";
 import { MovieList } from "@/components/lists/MovieList";
 import { SeriesList } from "@/components/lists/SeriesList";
 import { GameList } from "@/components/lists/GameList";
 import { PlaceList } from "@/components/lists/PlaceList";
 import { EventList } from "@/components/EventList";
 import { ActivityList } from "@/components/ActivityList";
+import { ExperienceList } from "@/components/lists/ExperienceList";
 import { EmptyState } from "@/components/EmptyState";
 
 function ListsPage() {
@@ -31,8 +32,12 @@ function ListsPage() {
         <h1 className="text-3xl font-bold">Kitaplığın</h1>
       </div>
 
-      <Tabs defaultValue="watchlist" className="space-y-4">
-        <TabsList className="grid grid-cols-6 w-full sm:w-[600px]">
+      <Tabs defaultValue="experiences" className="space-y-4">
+        <TabsList className="grid grid-cols-6 w-full sm:w-[720px]">
+          <TabsTrigger value="experiences" className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            <span className="hidden sm:inline">Deneyimler</span>
+          </TabsTrigger>
           <TabsTrigger value="watchlist" className="flex items-center gap-2">
             <Film className="h-4 w-4" />
             <span className="hidden sm:inline">İzlenecekler</span>
@@ -53,11 +58,14 @@ function ListsPage() {
             <Star className="h-4 w-4" />
             <span className="hidden sm:inline">Aktiviteler</span>
           </TabsTrigger>
-          <TabsTrigger value="videos" className="flex items-center gap-2">
-            <Youtube className="h-4 w-4" />
-            <span className="hidden sm:inline">Videolar</span>
-          </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="experiences">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Deneyimler</h2>
+          </div>
+          <ExperienceList userId={user.id} />
+        </TabsContent>
 
         <TabsContent value="watchlist" className="space-y-4">
           <div className="flex justify-between items-center">
@@ -67,7 +75,6 @@ function ListsPage() {
             <TabsList>
               <TabsTrigger value="movies">Filmler</TabsTrigger>
               <TabsTrigger value="series">Diziler</TabsTrigger>
-              <TabsTrigger value="videos">Videolar</TabsTrigger>
             </TabsList>
             <TabsContent value="movies">
               <MovieList userId={user.id} />
@@ -75,25 +82,34 @@ function ListsPage() {
             <TabsContent value="series">
               <SeriesList userId={user.id} />
             </TabsContent>
-            <TabsContent value="videos">
-              <EmptyState message="Video listesi yakında eklenecek" />
-            </TabsContent>
           </Tabs>
         </TabsContent>
 
         <TabsContent value="games">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Oyunlar</h2>
+          </div>
           <GameList userId={user.id} />
         </TabsContent>
 
         <TabsContent value="places">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Mekanlar</h2>
+          </div>
           <PlaceList userId={user.id} />
         </TabsContent>
 
         <TabsContent value="events">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Etkinlikler</h2>
+          </div>
           <EventList userId={user.id} />
         </TabsContent>
 
         <TabsContent value="activities">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Aktiviteler</h2>
+          </div>
           <ActivityList userId={user.id} />
         </TabsContent>
       </Tabs>
