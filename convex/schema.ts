@@ -10,6 +10,44 @@ export default defineSchema({
     role: v.optional(v.string())
   }).index("by_clerk_id", ["clerkId"]),
 
+  groups: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    memberCount: v.number()
+  })
+    .index("by_creator", ["createdBy"])
+    .index("by_name", ["name"]),
+
+  groupMembers: defineTable({
+    userId: v.id("users"),
+    groupId: v.id("groups"),
+    role: v.string(), // "admin" or "member"
+    joinedAt: v.number()
+  })
+    .index("by_user", ["userId"])
+    .index("by_group", ["groupId"])
+    .index("by_user_and_group", ["userId", "groupId"]),
+
+  groupInvites: defineTable({
+    groupId: v.id("groups"),
+    email: v.string(),
+    name: v.string(),
+    role: v.string(), // "admin" or "member"
+    status: v.string(), // "pending" or "accepted"
+    invitedBy: v.id("users"),
+    invitedAt: v.number(),
+    acceptedAt: v.optional(v.number()),
+    acceptedBy: v.optional(v.id("users")),
+    expiresAt: v.number() // 7 days from creation
+  })
+    .index("by_group", ["groupId"])
+    .index("by_email", ["email"])
+    .index("by_status", ["status"]),
+
   activities: defineTable({
     name: v.string(),
     category: v.string(),

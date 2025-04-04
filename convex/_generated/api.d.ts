@@ -17,6 +17,8 @@ import type * as activities from "../activities.js";
 import type * as defaultLists from "../defaultLists.js";
 import type * as experiences from "../experiences.js";
 import type * as games from "../games.js";
+import type * as groups from "../groups.js";
+import type * as invites from "../invites.js";
 import type * as lists from "../lists.js";
 import type * as movies from "../movies.js";
 import type * as places from "../places.js";
@@ -40,6 +42,8 @@ declare const fullApi: ApiFromModules<{
   defaultLists: typeof defaultLists;
   experiences: typeof experiences;
   games: typeof games;
+  groups: typeof groups;
+  invites: typeof invites;
   lists: typeof lists;
   movies: typeof movies;
   places: typeof places;

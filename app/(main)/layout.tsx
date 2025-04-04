@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 import { MainNav } from "@/components/MainNav";
 import { SignInPrompt } from "@/components/SignInPrompt";
 
@@ -10,19 +11,19 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const { isSignedIn } = useAuth();
+  const pathname = usePathname();
+  const isGroupDetailPage = pathname.startsWith("/groups/") && pathname !== "/groups";
 
   if (!isSignedIn) {
     return <SignInPrompt />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col">
       <main className="flex-1 px-4">
         <div className="max-w-screen-xl mx-auto">{children}</div>
       </main>
-      <div className="fixed bottom-0 left-0 right-0">
-        <MainNav />
-      </div>
+      {!isGroupDetailPage && <MainNav />}
     </div>
   );
 }
