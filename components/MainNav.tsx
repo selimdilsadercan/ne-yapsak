@@ -25,11 +25,6 @@ const routes = [
     href: "/library",
     label: "Kitaplığın",
     icon: ListTodo
-  },
-  {
-    href: "/profile",
-    label: "Profil",
-    icon: User
   }
 ];
 
