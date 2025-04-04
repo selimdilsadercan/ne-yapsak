@@ -4,18 +4,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ListForm } from "./ListForm";
 import { Doc } from "@/convex/_generated/dataModel";
 
-interface EditListDialogProps {
-  list: Doc<"lists">;
+interface ListDialogProps {
+  list?: Doc<"lists">;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditListDialog({ list, open, onOpenChange }: EditListDialogProps) {
+export function ListDialog({ list, open, onOpenChange }: ListDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Edit List</DialogTitle>
+          <DialogTitle>{list ? "Edit List" : "Create New List"}</DialogTitle>
         </DialogHeader>
         <ListForm initialData={list} onSuccess={() => onOpenChange(false)} />
       </DialogContent>

@@ -8,3 +8,4 @@ alwaysApply: true
 - use npx shadcn@latest instead of npx shadcn-ui@latest
 - if i say you to use a component for a task always search detaily if is this component exists in components folder
 - do not left unnecessary imports, and unused variables
+- do not use "any" type

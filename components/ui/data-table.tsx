@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({ columns, data, pagination: initialPag
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

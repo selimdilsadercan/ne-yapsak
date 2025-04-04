@@ -199,3 +199,44 @@ export const getAllPendingInvitesForUser = query({
     return invitesWithGroupNames;
   }
 });
+
+// Update an invite
+export const updateInvite = mutation({
+  args: {
+    inviteId: v.id("groupInvites"),
+    email: v.string(),
+    name: v.string(),
+    role: v.string()
+  },
+  async handler(ctx, args) {
+    const userId = await getCurrentUserId(ctx);
+    const invite = await ctx.db.get(args.inviteId);
+
+    if (!invite) {
+      throw new Error("Invite not found");
+    }
+
+    if (invite.status !== "pending") {
+      throw new Error("Only pending invites can be updated");
+    }
+
+    // Check if user is admin of the group
+    const membership = await ctx.db
+      .query("groupMembers")
+      .withIndex("by_user_and_group", (q) => q.eq("userId", userId).eq("groupId", invite.groupId))
+      .first();
+
+    if (!membership || membership.role !== "admin") {
+      throw new Error("Not authorized to update invites");
+    }
+
+    // Update invite
+    await ctx.db.patch(args.inviteId, {
+      email: args.email,
+      name: args.name,
+      role: args.role
+    });
+
+    return await ctx.db.get(args.inviteId);
+  }
+});

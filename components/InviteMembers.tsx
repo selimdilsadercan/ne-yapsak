@@ -21,7 +21,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-import { UserPlus, Trash2 } from "lucide-react";
+import { UserPlus, Trash2, Edit2 } from "lucide-react";
+
+interface GroupInvite {
+  _id: Id<"groupInvites">;
+  email: string;
+  name: string;
+  role: string;
+  status: string;
+  invitedAt: number;
+  expiresAt: number;
+}
 
 interface InviteMembersProps {
   groupId: Id<"groups">;
@@ -29,6 +39,7 @@ interface InviteMembersProps {
 
 export function InviteMembers({ groupId }: InviteMembersProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [editingInvite, setEditingInvite] = useState<Id<"groupInvites"> | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -36,25 +47,47 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
   });
 
   const createInvite = useMutation(api.invites.createInvite);
+  const updateInvite = useMutation(api.invites.updateInvite);
   const deleteInvite = useMutation(api.invites.deleteInvite);
   const pendingInvites = useQuery(api.invites.getPendingInvites, { groupId });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createInvite({
-        groupId,
-        email: formData.email,
-        name: formData.name,
-        role: formData.role
-      });
-      toast.success("Invitation sent successfully!");
+      if (editingInvite) {
+        await updateInvite({
+          inviteId: editingInvite,
+          email: formData.email,
+          name: formData.name,
+          role: formData.role
+        });
+        toast.success("Invitation updated successfully!");
+      } else {
+        await createInvite({
+          groupId,
+          email: formData.email,
+          name: formData.name,
+          role: formData.role
+        });
+        toast.success("Invitation sent successfully!");
+      }
       setIsOpen(false);
+      setEditingInvite(null);
       setFormData({ email: "", name: "", role: "member" });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to send invitation");
+      toast.error(editingInvite ? "Failed to update invitation" : "Failed to send invitation");
     }
+  };
+
+  const handleEdit = (invite: GroupInvite) => {
+    setEditingInvite(invite._id);
+    setFormData({
+      email: invite.email,
+      name: invite.name,
+      role: invite.role
+    });
+    setIsOpen(true);
   };
 
   const handleDelete = async (inviteId: Id<"groupInvites">) => {
@@ -69,7 +102,16 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
 
   return (
     <div className="space-y-6">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingInvite(null);
+            setFormData({ email: "", name: "", role: "member" });
+          }
+          setIsOpen(open);
+        }}
+      >
         <DialogTrigger asChild>
           <Button>
             <UserPlus className="h-4 w-4 mr-2" />
@@ -79,8 +121,8 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <DialogTitle>Invite New Member</DialogTitle>
-              <DialogDescription>Send an invitation to join the group.</DialogDescription>
+              <DialogTitle>{editingInvite ? "Edit Invitation" : "Invite New Member"}</DialogTitle>
+              <DialogDescription>{editingInvite ? "Update the invitation details." : "Send an invitation to join the group."}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
@@ -118,7 +160,7 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Send Invitation</Button>
+              <Button type="submit">{editingInvite ? "Update Invitation" : "Send Invitation"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -135,23 +177,28 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
                     <h4 className="font-semibold">{invite.name}</h4>
                     <p className="text-sm text-muted-foreground">{invite.email}</p>
                   </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
-                        <AlertDialogDescription>Are you sure you want to delete this invitation? This action cannot be undone.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(invite._id)}>Delete</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(invite)}>
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
+                          <AlertDialogDescription>Are you sure you want to delete this invitation? This action cannot be undone.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(invite._id)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-sm text-muted-foreground">

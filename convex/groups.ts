@@ -1,10 +1,11 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { getUser } from "./users";
 
+type Context = QueryCtx | MutationCtx;
+
 // Helper function to get current user ID
-async function getCurrentUserId(ctx: any) {
+async function getCurrentUserId(ctx: Context) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
     throw new Error("Not authenticated");
@@ -204,5 +205,54 @@ export const deleteGroup = mutation({
 
     // Delete group
     await ctx.db.delete(args.groupId);
+  }
+});
+
+// Remove a member from group (admin only)
+export const removeMember = mutation({
+  args: {
+    groupId: v.id("groups"),
+    memberId: v.id("groupMembers")
+  },
+  async handler(ctx, args) {
+    const userId = await getCurrentUserId(ctx);
+
+    // Check if user is admin of the group
+    const adminMembership = await ctx.db
+      .query("groupMembers")
+      .withIndex("by_user_and_group", (q) => q.eq("userId", userId).eq("groupId", args.groupId))
+      .first();
+
+    if (!adminMembership || adminMembership.role !== "admin") {
+      throw new Error("Not authorized to remove members");
+    }
+
+    // Get the member to be removed
+    const memberToRemove = await ctx.db.get(args.memberId);
+    if (!memberToRemove) {
+      throw new Error("Member not found");
+    }
+
+    // Check if trying to remove the last admin
+    if (memberToRemove.role === "admin") {
+      const adminCount = await ctx.db
+        .query("groupMembers")
+        .withIndex("by_group", (q) => q.eq("groupId", args.groupId))
+        .filter((q) => q.eq(q.field("role"), "admin"))
+        .collect();
+
+      if (adminCount.length === 1) {
+        throw new Error("Cannot remove the last admin");
+      }
+    }
+
+    // Remove the member
+    await ctx.db.delete(args.memberId);
+
+    // Update group member count
+    const group = await ctx.db.get(args.groupId);
+    await ctx.db.patch(args.groupId, {
+      memberCount: Math.max(0, (group?.memberCount ?? 1) - 1)
+    });
   }
 });

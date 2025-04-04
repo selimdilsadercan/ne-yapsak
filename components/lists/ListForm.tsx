@@ -1,11 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -15,16 +13,9 @@ import * as z from "zod";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const listTypes = ["activities", "movies", "places"] as const;
-
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  type: z.enum(listTypes, {
-    required_error: "Please select a list type"
-  }),
-  isPublic: z.boolean().default(true),
-  imageUrl: z.string().url().optional().or(z.literal("")),
   tags: z.array(z.string()).optional()
 });
 
@@ -45,9 +36,7 @@ export function ListForm({ initialData, onSuccess }: ListFormProps) {
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
-      type: (initialData?.type as (typeof listTypes)[number]) || "movies",
-      imageUrl: initialData?.imageUrl || "",
-      isPublic: initialData?.isPublic ?? true
+      tags: initialData?.tags || []
     }
   });
 
@@ -101,63 +90,6 @@ export function ListForm({ initialData, onSuccess }: ListFormProps) {
                 <Textarea placeholder="Write a description for your list..." {...field} />
               </FormControl>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!!initialData}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {listTypes.map((type) => (
-                    <SelectItem key={type} value={type} className="capitalize">
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>This determines what kind of items can be added to the list</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cover Image URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/image.jpg" type="url" {...field} />
-              </FormControl>
-              <FormDescription>Provide a URL for the list cover image (optional)</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="isPublic"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Public List</FormLabel>
-                <FormDescription>Make this list visible to everyone</FormDescription>
-              </div>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
             </FormItem>
           )}
         />

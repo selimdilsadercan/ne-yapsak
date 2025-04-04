@@ -94,7 +94,7 @@ export default function GroupsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {safeGroups.map((group) => (
-          <GroupCard key={group._id} group={group} isMember={true} isAdmin={group.createdBy.toString() === group._id.toString()} />
+          <GroupCard key={group._id} group={group} />
         ))}
         {safeGroups.length === 0 && (
           <div className="col-span-full text-center text-muted-foreground">You are not a member of any groups yet. Create one or join existing groups!</div>

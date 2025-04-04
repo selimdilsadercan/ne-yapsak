@@ -103,7 +103,7 @@ function HomePage() {
           <h2 className="mb-6 text-2xl font-bold">Listeler</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {suggestedLists.map((list) => (
-              <ListCard key={list.id} title={list.title} description={list.description} imageUrl={list.imageUrl} href={list.href} />
+              <ListCard key={list.id} title={list.title} description={list.description} href={list.href} />
             ))}
           </div>
         </section>

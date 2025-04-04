@@ -2,13 +2,37 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
+type ItemType = "activities" | "places" | "games" | "experiences" | "movies" | "series";
+
+interface BaseItemDetails {
+  _id: Id<"activities"> | Id<"places"> | Id<"games"> | Id<"experiences"> | Id<"movies"> | Id<"series">;
+  description?: string;
+}
+
+interface NamedItemDetails extends BaseItemDetails {
+  name: string;
+}
+
+interface TitledItemDetails extends BaseItemDetails {
+  title: string;
+}
+
+type ItemDetails = NamedItemDetails | TitledItemDetails;
+
+function hasTitleField(details: ItemDetails): details is TitledItemDetails {
+  return "title" in details;
+}
+
+function getItemName(details: ItemDetails | null): string {
+  if (!details) return "";
+  if (hasTitleField(details)) return details.title;
+  return details.name;
+}
+
 export const createList = mutation({
   args: {
     name: v.string(),
     description: v.optional(v.string()),
-    type: v.string(),
-    isPublic: v.boolean(),
-    imageUrl: v.optional(v.string()),
     tags: v.optional(v.array(v.string()))
   },
   handler: async (ctx, args) => {
@@ -20,9 +44,6 @@ export const createList = mutation({
     const listId = await ctx.db.insert("lists", {
       name: args.name,
       description: args.description,
-      type: args.type,
-      isPublic: args.isPublic,
-      imageUrl: args.imageUrl,
       tags: args.tags || [],
       createdBy: identity.subject,
       createdAt: Date.now(),
@@ -40,9 +61,6 @@ export const updateList = mutation({
     listId: v.id("lists"),
     name: v.string(),
     description: v.optional(v.string()),
-    type: v.string(),
-    isPublic: v.boolean(),
-    imageUrl: v.optional(v.string()),
     tags: v.optional(v.array(v.string()))
   },
   handler: async (ctx, args) => {
@@ -63,9 +81,6 @@ export const updateList = mutation({
     await ctx.db.patch(args.listId, {
       name: args.name,
       description: args.description,
-      type: args.type,
-      isPublic: args.isPublic,
-      imageUrl: args.imageUrl,
       tags: args.tags || [],
       updatedAt: Date.now()
     });
@@ -269,8 +284,8 @@ export const followList = mutation({
       throw new Error("List not found");
     }
 
-    if (!list.isPublic && list.createdBy !== user._id) {
-      throw new Error("Cannot follow private list");
+    if (list.createdBy !== user._id) {
+      throw new Error("Not authorized");
     }
 
     const existing = await ctx.db
@@ -342,23 +357,13 @@ export const unfollowList = mutation({
 // Queries
 export const getLists = query({
   args: {
-    userId: v.optional(v.string()),
-    type: v.optional(v.string()),
-    includePrivate: v.optional(v.boolean())
+    userId: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     let lists = await ctx.db.query("lists").collect();
 
     if (args.userId) {
       lists = lists.filter((list) => list.createdBy === args.userId);
-    }
-
-    if (args.type) {
-      lists = lists.filter((list) => list.type === args.type);
-    }
-
-    if (!args.includePrivate) {
-      lists = lists.filter((list) => list.isPublic);
     }
 
     return lists;
@@ -385,12 +390,33 @@ export const getList = query({
     // Fetch details for each item based on its type
     const items = await Promise.all(
       listItems.map(async (item) => {
-        const itemDetails = await ctx.db.get(item.itemId as Id<any>);
+        let itemDetails: ItemDetails | null = null;
+
+        switch (item.itemType as ItemType) {
+          case "activities":
+            itemDetails = await ctx.db.get(item.itemId as Id<"activities">);
+            break;
+          case "places":
+            itemDetails = await ctx.db.get(item.itemId as Id<"places">);
+            break;
+          case "games":
+            itemDetails = await ctx.db.get(item.itemId as Id<"games">);
+            break;
+          case "experiences":
+            itemDetails = await ctx.db.get(item.itemId as Id<"experiences">);
+            break;
+          case "movies":
+            itemDetails = await ctx.db.get(item.itemId as Id<"movies">);
+            break;
+          case "series":
+            itemDetails = await ctx.db.get(item.itemId as Id<"series">);
+            break;
+        }
+
         return {
           ...item,
-          name: itemDetails?.name,
-          description: itemDetails?.description,
-          type: item.itemType
+          name: getItemName(itemDetails),
+          description: itemDetails?.description
         };
       })
     );
@@ -405,18 +431,12 @@ export const getList = query({
 export const getSuggestedLists = query({
   args: {},
   handler: async (ctx) => {
-    const lists = await ctx.db
-      .query("lists")
-      .withIndex("by_follower_count")
-      .filter((q) => q.eq(q.field("isPublic"), true))
-      .order("desc")
-      .take(3);
+    const lists = await ctx.db.query("lists").withIndex("by_follower_count").order("desc").take(3);
 
     return lists.map((list) => ({
       id: list._id,
       title: list.name,
       description: list.description,
-      imageUrl: list.imageUrl || "/images/default-list.jpg",
       href: `/list/${list._id}`
     }));
   }

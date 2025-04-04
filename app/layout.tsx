@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ToastProvider } from "@/providers/ToastProvider";
 import ConvexProvider from "@/providers/ConvexProvider";
 import { UserSync } from "@/components/auth/UserSync";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="tr" suppressHydrationWarning>
       <body className={inter.className}>
         <ConvexProvider>
-          <ToastProvider />
+          <Toaster />
           <UserSync />
           {children}
         </ConvexProvider>

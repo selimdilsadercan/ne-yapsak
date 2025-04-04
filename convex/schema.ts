@@ -201,18 +201,14 @@ export default defineSchema({
   lists: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
-    type: v.string(),
-    isPublic: v.boolean(),
     createdBy: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
-    imageUrl: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     itemCount: v.number(),
     followerCount: v.number()
   })
     .index("by_creator", ["createdBy"])
-    .index("by_type", ["type"])
     .index("by_follower_count", ["followerCount"]),
 
   listItems: defineTable({

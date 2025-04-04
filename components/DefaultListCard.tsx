@@ -14,7 +14,7 @@ export function DefaultListCard({ title, description, href, icon: Icon, classNam
   return (
     <Link href={href}>
       <div className={cn("group flex items-start gap-3 rounded-lg bg-card transition-all hover:bg-accent sm:gap-4", className)}>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground sm:h-12 sm:w-12">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/10 group-hover:text-primary sm:h-12 sm:w-12">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
         <div className="min-w-0 flex-1">
