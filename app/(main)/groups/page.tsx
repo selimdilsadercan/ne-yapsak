@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-hot-toast";
 import { Plus } from "lucide-react";
-import { Doc, Id } from "@/convex/_generated/dataModel";
 
 export default function GroupsPage() {
   const groups = useQuery(api.groups.listMyGroups);
@@ -31,6 +30,7 @@ export default function GroupsPage() {
       setIsOpen(false);
       setFormData({ name: "", description: "", imageUrl: "" });
     } catch (error) {
+      console.error(error);
       toast.error("Failed to create group");
     }
   };

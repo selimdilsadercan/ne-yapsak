@@ -3,11 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { ExperienceCard } from "@/components/ExperienceCard";
 import { EmptyState } from "@/components/EmptyState";
 
-interface ExperienceListProps {
-  userId: string;
-}
-
-export function ExperienceList({ userId }: ExperienceListProps) {
+export function ExperienceList() {
   const experiences = useQuery(api.experiences.getAll);
 
   if (!experiences || experiences.length === 0) {

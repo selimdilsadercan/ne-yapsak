@@ -58,6 +58,7 @@ export default function GroupDetailPage() {
       setIsOpen(false);
       setFormData({ email: "", name: "", role: "member" });
     } catch (error) {
+      console.error(error);
       toast.error("Failed to send invitation");
     }
   };
@@ -67,6 +68,7 @@ export default function GroupDetailPage() {
       await deleteInvite({ inviteId });
       toast.success("Invitation deleted successfully!");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to delete invitation");
     }
   };

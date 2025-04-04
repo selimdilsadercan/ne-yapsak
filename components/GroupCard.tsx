@@ -3,7 +3,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "react-hot-toast";
@@ -30,7 +29,6 @@ interface GroupCardProps {
 
 export function GroupCard({ group, isAdmin, isMember, onLeave, onDelete }: GroupCardProps) {
   const router = useRouter();
-  const { user } = useUser();
 
   const joinGroup = useMutation(api.groups.joinGroup);
   const leaveGroup = useMutation(api.groups.leaveGroup);
@@ -42,6 +40,7 @@ export function GroupCard({ group, isAdmin, isMember, onLeave, onDelete }: Group
       toast.success("Successfully joined the group!");
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast.error("Failed to join group");
     }
   };
@@ -53,6 +52,7 @@ export function GroupCard({ group, isAdmin, isMember, onLeave, onDelete }: Group
       onLeave?.();
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast.error("Failed to leave group");
     }
   };
@@ -64,6 +64,7 @@ export function GroupCard({ group, isAdmin, isMember, onLeave, onDelete }: Group
       onDelete?.();
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast.error("Failed to delete group");
     }
   };

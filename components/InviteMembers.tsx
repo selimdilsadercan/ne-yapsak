@@ -52,6 +52,7 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
       setIsOpen(false);
       setFormData({ email: "", name: "", role: "member" });
     } catch (error) {
+      console.error(error);
       toast.error("Failed to send invitation");
     }
   };
@@ -61,6 +62,7 @@ export function InviteMembers({ groupId }: InviteMembersProps) {
       await deleteInvite({ inviteId });
       toast.success("Invitation deleted successfully!");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to delete invitation");
     }
   };

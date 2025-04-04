@@ -10,7 +10,6 @@ import { PlaceList } from "@/components/lists/PlaceList";
 import { EventList } from "@/components/EventList";
 import { ActivityList } from "@/components/ActivityList";
 import { ExperienceList } from "@/components/lists/ExperienceList";
-import { EmptyState } from "@/components/EmptyState";
 
 function ListsPage() {
   const { user } = useUser();
@@ -64,7 +63,7 @@ function ListsPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Deneyimler</h2>
           </div>
-          <ExperienceList userId={user.id} />
+          <ExperienceList />
         </TabsContent>
 
         <TabsContent value="watchlist" className="space-y-4">
