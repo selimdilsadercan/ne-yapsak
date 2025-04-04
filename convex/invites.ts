@@ -162,3 +162,40 @@ export const deleteInvite = mutation({
     await ctx.db.delete(args.inviteId);
   }
 });
+
+export const getAllPendingInvitesForUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) return [];
+
+    const invites = await ctx.db
+      .query("groupInvites")
+      .filter((q) => q.eq(q.field("email"), user.email))
+      .filter((q) => q.eq(q.field("status"), "pending"))
+      .order("desc")
+      .collect();
+
+    // Fetch group names for each invite
+    const invitesWithGroupNames = await Promise.all(
+      invites.map(async (invite) => {
+        const group = await ctx.db.get(invite.groupId);
+        return {
+          ...invite,
+          groupName: group?.name || "Unknown Group"
+        };
+      })
+    );
+
+    return invitesWithGroupNames;
+  }
+});

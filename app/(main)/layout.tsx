@@ -4,6 +4,7 @@ import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { MainNav } from "@/components/MainNav";
 import { SignInPrompt } from "@/components/SignInPrompt";
+import Header from "@/components/Header";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -19,11 +20,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 px-4">
-        <div className="max-w-screen-xl mx-auto">{children}</div>
-      </main>
-      {!isGroupDetailPage && <MainNav />}
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1 container mx-auto max-w-screen-xl px-4 py-6">{children}</main>
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t">{!isGroupDetailPage && <MainNav />}</div>
     </div>
   );
 }

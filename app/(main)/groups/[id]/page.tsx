@@ -4,8 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Users, ArrowLeft, UserPlus, Trash2 } from "lucide-react";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Users, ArrowLeft, UserPlus, Trash2, Info } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { toast } from "react-hot-toast";
@@ -177,19 +178,30 @@ export default function GroupDetailPage() {
             {/* Active Members */}
             {groupDetails.members.map((member) => (
               <Card key={member._id}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <Avatar>
-                    <AvatarImage src={member.user?.image} />
-                    <AvatarFallback>{member.user?.name?.slice(0, 2).toUpperCase() || "??"}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-semibold">{member.user?.name || "Unknown User"}</h3>
-                    <p className="text-sm text-muted-foreground">{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</p>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src={member.user?.image} />
+                      <AvatarFallback>{member.user?.name?.slice(0, 2).toUpperCase() || "??"}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-semibold">{member.user?.name || "Unknown User"}</h3>
+                      <p className="text-sm text-muted-foreground">{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</p>
+                    </div>
                   </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Info className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Joined {formatDistanceToNow(member.joinedAt)} ago</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Joined {formatDistanceToNow(member.joinedAt)} ago</p>
-                </CardContent>
               </Card>
             ))}
 
@@ -209,31 +221,44 @@ export default function GroupDetailPage() {
                       <p className="text-sm text-muted-foreground">{invite.role.charAt(0).toUpperCase() + invite.role.slice(1)}</p>
                     </div>
                   </div>
-                  {isAdmin && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
-                          <AlertDialogDescription>Are you sure you want to delete this invitation? This action cannot be undone.</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(invite._id)}>Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Info className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="space-y-1">
+                            <p>{invite.email}</p>
+                            <p>Invited {formatDistanceToNow(invite.invitedAt)} ago</p>
+                            <p>Expires in {formatDistanceToNow(invite.expiresAt)}</p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isAdmin && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
+                            <AlertDialogDescription>Are you sure you want to delete this invitation? This action cannot be undone.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(invite._id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{invite.email}</p>
-                  <p className="text-sm text-muted-foreground">Invited {formatDistanceToNow(invite.invitedAt)} ago</p>
-                  <p className="text-sm text-muted-foreground">Expires in {formatDistanceToNow(invite.expiresAt)}</p>
-                </CardContent>
               </Card>
             ))}
           </div>
