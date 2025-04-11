@@ -7,7 +7,7 @@ import { Home, Compass, ListTodo, Users } from "lucide-react";
 
 const routes = [
   {
-    href: "/",
+    href: "/home",
     label: "Ana Sayfa",
     icon: Home
   },

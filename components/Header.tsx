@@ -15,7 +15,7 @@ function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-lg font-bold text-primary-foreground">W</span>
           </div>
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/home" className="text-xl font-bold">
             wedo
           </Link>
         </div>

@@ -431,7 +431,7 @@ export const getList = query({
 export const getSuggestedLists = query({
   args: {},
   handler: async (ctx) => {
-    const lists = await ctx.db.query("lists").withIndex("by_follower_count").order("desc").take(3);
+    const lists = await ctx.db.query("lists").withIndex("by_follower_count").order("desc").collect();
 
     return lists.map((list) => ({
       id: list._id,
