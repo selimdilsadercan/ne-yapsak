@@ -24,6 +24,7 @@ import type * as movies from "../movies.js";
 import type * as places from "../places.js";
 import type * as search from "../search.js";
 import type * as series from "../series.js";
+import type * as sessions from "../sessions.js";
 import type * as userActivities from "../userActivities.js";
 import type * as userEvents from "../userEvents.js";
 import type * as users from "../users.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   places: typeof places;
   search: typeof search;
   series: typeof series;
+  sessions: typeof sessions;
   userActivities: typeof userActivities;
   userEvents: typeof userEvents;
   users: typeof users;

@@ -8,9 +8,10 @@ interface SwipeableCardProps {
   iconName: string;
   imageUrl?: string;
   onSwipe: (direction: "left" | "right" | "up") => void;
+  enableUpSwipe?: boolean;
 }
 
-function SwipeableCard({ title, iconName, imageUrl, onSwipe }: SwipeableCardProps) {
+function SwipeableCard({ title, iconName, imageUrl, onSwipe, enableUpSwipe = true }: SwipeableCardProps) {
   const controls = useAnimation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -36,7 +37,7 @@ function SwipeableCard({ title, iconName, imageUrl, onSwipe }: SwipeableCardProp
 
     // Determine swipe direction based on velocity and offset
     if (Math.abs(swipe.x) > 100 || Math.abs(swipe.y) > 100) {
-      if (Math.abs(swipe.y) > Math.abs(swipe.x) && swipe.y < 0) {
+      if (enableUpSwipe && Math.abs(swipe.y) > Math.abs(swipe.x) && swipe.y < 0) {
         await controls.start({ x: 0, y: -1000, opacity: 0 });
         onSwipe("up");
       } else if (swipe.x > 0) {
@@ -82,12 +83,14 @@ function SwipeableCard({ title, iconName, imageUrl, onSwipe }: SwipeableCardProp
           </div>
         </motion.div>
 
-        {/* Up Indicator (SAVE) */}
-        <motion.div className="absolute left-1/2 top-4 z-10 -translate-x-1/2" style={{ opacity: upIndicatorOpacity }}>
-          <div className="rounded-md border-4 border-primary px-4 py-1">
-            <span className="text-2xl font-bold text-primary">SAVE</span>
-          </div>
-        </motion.div>
+        {/* Up Indicator (SAVE) - Only show if up swipe is enabled */}
+        {enableUpSwipe && (
+          <motion.div className="absolute left-1/2 top-4 z-10 -translate-x-1/2" style={{ opacity: upIndicatorOpacity }}>
+            <div className="rounded-md border-4 border-primary px-4 py-1">
+              <span className="text-2xl font-bold text-primary">SAVE</span>
+            </div>
+          </motion.div>
+        )}
 
         <div className="relative aspect-[4/5] w-full bg-muted">
           {imageUrl ? (
@@ -102,7 +105,7 @@ function SwipeableCard({ title, iconName, imageUrl, onSwipe }: SwipeableCardProp
         <CardContent>
           <div className="flex justify-between text-muted-foreground">
             <span>← Geç</span>
-            <span>↑ Ekle</span>
+            {enableUpSwipe && <span>↑ Ekle</span>}
             <span>İzle →</span>
           </div>
         </CardContent>

@@ -30,7 +30,7 @@ function getItemName(details: ItemDetails | null): string {
 }
 
 export const createList = mutation({
-  args: {
+  args: { 
     name: v.string(),
     description: v.optional(v.string()),
     tags: v.optional(v.array(v.string()))
@@ -391,32 +391,76 @@ export const getList = query({
     const items = await Promise.all(
       listItems.map(async (item) => {
         let itemDetails: ItemDetails | null = null;
+        let imageUrl: string | undefined;
 
-        switch (item.itemType as ItemType) {
-          case "activities":
-            itemDetails = await ctx.db.get(item.itemId as Id<"activities">);
+        switch (item.itemType) {
+          case "movie": {
+            const movieDetails = await ctx.db.get(item.itemId as Id<"movies">);
+            if (movieDetails) {
+              itemDetails = {
+                _id: movieDetails._id,
+                title: movieDetails.title || "",
+                description: movieDetails.description
+              };
+              imageUrl = movieDetails.imageUrl;
+            }
             break;
-          case "places":
-            itemDetails = await ctx.db.get(item.itemId as Id<"places">);
+          }
+          case "series": {
+            const seriesDetails = await ctx.db.get(item.itemId as Id<"series">);
+            if (seriesDetails) {
+              itemDetails = {
+                _id: seriesDetails._id,
+                name: seriesDetails.name || "",
+                description: seriesDetails.description
+              };
+              imageUrl = seriesDetails.posterUrl;
+            }
             break;
-          case "games":
-            itemDetails = await ctx.db.get(item.itemId as Id<"games">);
+          }
+          case "game": {
+            const gameDetails = await ctx.db.get(item.itemId as Id<"games">);
+            if (gameDetails) {
+              itemDetails = {
+                _id: gameDetails._id,
+                title: gameDetails.title || "",
+                description: gameDetails.description
+              };
+              imageUrl = gameDetails.imageUrl;
+            }
             break;
-          case "experiences":
-            itemDetails = await ctx.db.get(item.itemId as Id<"experiences">);
+          }
+          case "place": {
+            const placeDetails = await ctx.db.get(item.itemId as Id<"places">);
+            if (placeDetails) {
+              itemDetails = {
+                _id: placeDetails._id,
+                name: placeDetails.name || "",
+                description: placeDetails.description
+              };
+              imageUrl = placeDetails.imageUrl;
+            }
             break;
-          case "movies":
-            itemDetails = await ctx.db.get(item.itemId as Id<"movies">);
+          }
+          case "activity": {
+            const activityDetails = await ctx.db.get(item.itemId as Id<"activities">);
+            if (activityDetails) {
+              itemDetails = {
+                _id: activityDetails._id,
+                name: activityDetails.name || "",
+                description: activityDetails.description
+              };
+              imageUrl = activityDetails.imageUrl;
+            }
             break;
-          case "series":
-            itemDetails = await ctx.db.get(item.itemId as Id<"series">);
-            break;
+          }
         }
 
         return {
           ...item,
           name: getItemName(itemDetails),
-          description: itemDetails?.description
+          description: itemDetails?.description,
+          imageUrl
         };
       })
     );

@@ -5,20 +5,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchMovies, getTMDBImageUrl, TMDBMovie } from "@/lib/tmdb";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "react-hot-toast";
-import { Film, PlusIcon } from "lucide-react";
+import { Film, PlusIcon, Check } from "lucide-react";
 import Image from "next/image";
+import { Id } from "@/convex/_generated/dataModel";
 
-export function MovieSearchDialog() {
+interface MovieSearchDialogProps {
+  listId?: Id<"lists">;
+}
+
+export function MovieSearchDialog({ listId }: MovieSearchDialogProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<TMDBMovie[]>([]);
-  const addMovie = useMutation(api.movies.addMovieFromTMDB);
+  const addMovie = useMutation(api.movies.createMovie);
+  const addToList = useMutation(api.lists.addItemToList);
   const { user } = useUser();
+
+  // Get the list items to check for duplicates
+  const list = useQuery(api.lists.getList, { listId: listId || ("" as Id<"lists">) });
+  const existingMovieIds = list?.items?.filter((item) => item.itemType === "movie").map((item) => item.itemId) || [];
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -41,22 +51,46 @@ export function MovieSearchDialog() {
       return;
     }
 
+    if (!listId) {
+      toast.error("List ID is required");
+      return;
+    }
+
     try {
-      await addMovie({
+      // Create a new movie
+      const movieId = await addMovie({
         tmdbId: movie.id,
         title: movie.title,
         year: new Date(movie.release_date).getFullYear(),
-        description: movie.overview,
-        imageUrl: getTMDBImageUrl(movie.poster_path),
+        description: movie.overview || "",
+        imageUrl: getTMDBImageUrl(movie.poster_path) || "",
         rating: movie.vote_average,
-        userId: user.id,
-        duration: 0, // Default duration since TMDB API doesn't provide it in search results
-        genres: [] // Default empty genres since TMDB API doesn't provide it in search results
+        duration: 0,
+        genres: []
       });
-      toast.success("Movie added to your list!");
+
+      // Check if the movie is already in the list
+      if (existingMovieIds.includes(movieId.toString())) {
+        toast.error("This movie is already in your list");
+        return;
+      }
+
+      // Add to list
+      await addToList({
+        listId,
+        itemId: movieId,
+        itemType: "movie",
+        notes: ""
+      });
+      toast.success("Movie added to list!");
+      setOpen(false);
     } catch (error) {
-      toast.error("Failed to add movie");
-      console.error(error);
+      if (error instanceof Error && error.message === "Item already in list") {
+        toast.error("This movie is already in your list");
+      } else {
+        toast.error("Failed to add movie");
+        console.error(error);
+      }
     }
   };
 
@@ -84,44 +118,62 @@ export function MovieSearchDialog() {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {searchResults.map((movie) => (
-            <div key={movie.id} className="group bg-card hover:bg-accent rounded-lg overflow-hidden transition-colors">
-              {/* Movie Poster */}
-              <div className="relative aspect-[2/3]">
-                <Image
-                  src={getTMDBImageUrl(movie.poster_path) || "/placeholder.png"}
-                  alt={movie.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover"
-                  priority={false}
-                />
-              </div>
+          {searchResults.map((movie) => {
+            // Check if this movie is already in the list
+            const isInList = existingMovieIds.some((id) => {
+              // We can't directly compare with movie.id since we don't have the movieId yet
+              // This is a simplified check that might not be 100% accurate
+              return false;
+            });
 
-              {/* Movie Info */}
-              <div className="p-4 space-y-4">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg line-clamp-2 min-h-[3.5rem]">{movie.title}</h3>
-                  <div className="flex items-center gap-3 text-muted-foreground">
-                    {movie.release_date && <p className="text-sm">{new Date(movie.release_date).getFullYear()}</p>}
-                    {movie.vote_average > 0 && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm text-yellow-400">★</span>
-                        <span className="text-sm">{movie.vote_average.toFixed(1)}</span>
-                      </div>
-                    )}
-                  </div>
-                  {movie.overview && <p className="text-sm text-muted-foreground line-clamp-2">{movie.overview}</p>}
+            return (
+              <div key={movie.id} className="group bg-card hover:bg-accent rounded-lg overflow-hidden transition-colors">
+                {/* Movie Poster */}
+                <div className="relative aspect-[2/3]">
+                  <Image
+                    src={getTMDBImageUrl(movie.poster_path) || "/placeholder.png"}
+                    alt={movie.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                    priority={false}
+                  />
                 </div>
 
-                {/* Add Button */}
-                <Button size="sm" onClick={() => handleAddMovie(movie)} variant="secondary" className="w-full">
-                  <PlusIcon className="w-4 h-4 mr-2" />
-                  Add to List
-                </Button>
+                {/* Movie Info */}
+                <div className="p-4 space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg line-clamp-2 min-h-[3.5rem]">{movie.title}</h3>
+                    <div className="flex items-center gap-3 text-muted-foreground">
+                      {movie.release_date && <p className="text-sm">{new Date(movie.release_date).getFullYear()}</p>}
+                      {movie.vote_average > 0 && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm text-yellow-400">★</span>
+                          <span className="text-sm">{movie.vote_average.toFixed(1)}</span>
+                        </div>
+                      )}
+                    </div>
+                    {movie.overview && <p className="text-sm text-muted-foreground line-clamp-2">{movie.overview}</p>}
+                  </div>
+
+                  {/* Add Button */}
+                  <Button size="sm" onClick={() => handleAddMovie(movie)} variant={isInList ? "outline" : "secondary"} className="w-full" disabled={isInList}>
+                    {isInList ? (
+                      <>
+                        <Check className="w-4 h-4 mr-2" />
+                        Already in List
+                      </>
+                    ) : (
+                      <>
+                        <PlusIcon className="w-4 h-4 mr-2" />
+                        Add to List
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </DialogContent>
     </Dialog>

@@ -242,5 +242,54 @@ export default defineSchema({
     rating: v.number(),
     reviewCount: v.number(),
     isActive: v.boolean()
-  }).index("by_type", ["type"])
+  }).index("by_type", ["type"]),
+
+  sessions: defineTable({
+    listId: v.id("lists"),
+    createdBy: v.id("users"),
+    status: v.string(), // "active", "completed", "cancelled"
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    expiresAt: v.number(), // Session expiry time
+    currentItemIndex: v.number(), // Current item being voted on
+    totalVotes: v.number() // Total number of votes cast
+  })
+    .index("by_list", ["listId"])
+    .index("by_creator", ["createdBy"])
+    .index("by_status", ["status"]),
+
+  sessionMembers: defineTable({
+    sessionId: v.id("sessions"),
+    userId: v.id("users"),
+    joinedAt: v.number(),
+    lastActiveAt: v.number(),
+    votesCount: v.number(), // Number of votes cast by this user
+    isReady: v.boolean() // Whether the user is ready to start
+  })
+    .index("by_session", ["sessionId"])
+    .index("by_user", ["userId"])
+    .index("by_session_and_user", ["sessionId", "userId"]),
+
+  sessionVotes: defineTable({
+    sessionId: v.id("sessions"),
+    userId: v.id("users"),
+    itemId: v.union(v.id("listItems"), v.id("sessionItems")), // Allow both types of IDs
+    vote: v.string(), // "left", "right", "up"
+    votedAt: v.number()
+  })
+    .index("by_session", ["sessionId"])
+    .index("by_user", ["userId"])
+    .index("by_session_and_item", ["sessionId", "itemId"]),
+
+  sessionItems: defineTable({
+    sessionId: v.id("sessions"),
+    itemType: v.string(), // "movie", "series", "game", etc.
+    itemId: v.string(), // TMDB ID or other external ID
+    name: v.string(),
+    imageUrl: v.optional(v.string()),
+    addedBy: v.id("users"),
+    addedAt: v.number()
+  })
+    .index("by_session", ["sessionId"])
+    .index("by_added_by", ["addedBy"])
 });
