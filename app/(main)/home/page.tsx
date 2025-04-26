@@ -1,115 +1,62 @@
 "use client";
-
-import { ListCard } from "@/components/ListCard";
-import { DefaultListCard } from "@/components/DefaultListCard";
-import { ExperienceCard } from "@/components/ExperienceCard";
+import { useUser } from "@clerk/nextjs";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Film, Gamepad2, MapPin, PartyPopper, Activity, Sparkles } from "lucide-react";
+import { ActivityNodeCard } from "@/components/activityNode/ActivityNodeCard";
+import { CreateActivityNodeDialog } from "@/components/activityNode/CreateActivityNodeDialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+// import { useSession } from "@/lib/useSession";
 
-const defaultLists = [
-  {
-    id: "experience",
-    title: "Yeni Bir Şey Deneyimlemek",
-    description: "Yeni deneyimler",
-    icon: Sparkles,
-    href: "/list?type=experience"
-  },
-  {
-    id: "watch",
-    title: "Bir Şey İzlemek",
-    description: "Film ve diziler",
-    icon: Film,
-    href: "/list?type=watch"
-  },
-  {
-    id: "game",
-    title: "Bir Şey Oynamak",
-    description: "Video oyunları",
-    icon: Gamepad2,
-    href: "/list?type=game"
-  },
-  {
-    id: "visit",
-    title: "Bir Yere Gitmek",
-    description: "Mekanlar ve yerler",
-    icon: MapPin,
-    href: "/list?type=visit"
-  },
-  {
-    id: "event",
-    title: "Bir Etkinliğe Gitmek",
-    description: "Konser, tiyatro ve daha fazlası",
-    icon: PartyPopper,
-    href: "/list?type=event"
-  },
-  {
-    id: "activity",
-    title: "Bir Aktivite Yapmak",
-    description: "Yapabileceğiniz her şey",
-    icon: Activity,
-    href: "/list?type=activity"
-  }
-];
+export default function HomePage() {
+  const { user } = useUser();
+  const [open, setOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-function HomePage() {
-  const suggestedLists = useQuery(api.lists.getSuggestedLists);
-  const experiences = useQuery(api.experiences.getAll);
+  // Always call hooks, never conditionally!
+  const convexUser = user?.id ? useQuery(api.users.getUser, { clerkId: user.id }) : undefined;
+  const nodes = useQuery(api.activityNodes.getByUser, convexUser?._id ? { userId: convexUser._id } : "skip") || [];
+  const activities = useQuery(api.activities.getAll, {}) || [];
+  const groups = useQuery(api.groups.listMyGroups, {}) || [];
 
-  if (!suggestedLists || !experiences) {
-    return (
-      <div className="container flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
-        <h1 className="text-2xl font-bold">Yükleniyor...</h1>
-      </div>
-    );
+  const activityMap = Object.fromEntries(activities.map((a: any) => [a._id, a]));
+  const groupMap = Object.fromEntries(groups.map((g: any) => [g._id, g]));
+
+  // Only render UI conditionally
+  if (!convexUser?._id) {
+    return <div className="flex items-center justify-center min-h-screen">Yükleniyor...</div>;
   }
 
   return (
-    <div className="container space-y-12 py-6">
-      {/* Default Lists Section */}
-      <section>
-        <h1 className="mb-6 text-2xl font-bold">Bugün Ne Yapmak İstersin?</h1>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
-          {defaultLists.map((list) => (
-            <DefaultListCard key={list.id} title={list.title} description={list.description} icon={list.icon} href={list.href} className="p-3 sm:p-4" />
-          ))}
-        </div>
-      </section>
-      {/* Experiences Section */}
-      {experiences.length > 0 && (
-        <section>
-          <h2 className="mb-6 text-2xl font-bold">Bir Şeyler Denemek</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {experiences.map((experience) => (
-              <ExperienceCard
-                key={experience._id}
-                id={experience._id}
-                name={experience.name}
-                description={experience.description}
-                imageUrl={experience.imageUrl}
-                location={experience.location}
-                price={experience.price}
-                rating={experience.rating}
-                reviewCount={experience.reviewCount}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Suggested Lists Section */}
-      {suggestedLists.length > 0 && (
-        <section>
-          <h2 className="mb-6 text-2xl font-bold">Listeler</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {suggestedLists.map((list) => (
-              <ListCard key={list.id} title={list.title} description={list.description} href={list.href} />
-            ))}
-          </div>
-        </section>
-      )}
+    <div className="relative min-h-screen bg-background p-4 pb-24">
+      <div className="space-y-3">
+        {nodes.map((node: any) => (
+          <ActivityNodeCard
+            key={node._id}
+            node={node}
+            activity={activityMap[node.activityId]}
+            group={node.groupId ? groupMap[node.groupId] : undefined}
+            user={convexUser}
+          />
+        ))}
+      </div>
+      <Button
+        className="fixed bottom-24 right-6 rounded-full w-14 h-14 p-0 flex items-center justify-center shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
+        onClick={() => setOpen(true)}
+        size="icon"
+      >
+        <Plus className="w-7 h-7" />
+      </Button>
+      <CreateActivityNodeDialog
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v);
+          if (!v) setRefreshKey((k) => k + 1);
+        }}
+        userId={convexUser._id}
+        onCreated={() => setRefreshKey((k) => k + 1)}
+      />
     </div>
   );
 }
-
-export default HomePage;

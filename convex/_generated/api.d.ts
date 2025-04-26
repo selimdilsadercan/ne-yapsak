@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as activities from "../activities.js";
+import type * as activityNodes from "../activityNodes.js";
 import type * as defaultLists from "../defaultLists.js";
 import type * as experiences from "../experiences.js";
 import type * as games from "../games.js";
@@ -40,6 +41,7 @@ import type * as watch from "../watch.js";
  */
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
+  activityNodes: typeof activityNodes;
   defaultLists: typeof defaultLists;
   experiences: typeof experiences;
   games: typeof games;

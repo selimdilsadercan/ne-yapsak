@@ -291,5 +291,18 @@ export default defineSchema({
     addedAt: v.number()
   })
     .index("by_session", ["sessionId"])
-    .index("by_added_by", ["addedBy"])
+    .index("by_added_by", ["addedBy"]),
+
+  activityNodes: defineTable({
+    activityId: v.id("activities"),
+    userId: v.id("users"),
+    groupId: v.optional(v.id("groups")),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_activity", ["activityId"])
+    .index("by_user", ["userId"])
+    .index("by_group", ["groupId"])
+    .index("by_user_and_activity", ["userId", "activityId"])
+    .index("by_group_and_activity", ["groupId", "activityId"])
 });
