@@ -101,12 +101,7 @@ function DiscoverPage() {
                     {/* First show explore pages */}
                     {categoryExplorePages.map((page) => (
                       <div key={page.href} className="w-[140px] shrink-0">
-                        <DiscoverCard
-                          title={page.title}
-                          category={page.category}
-                          iconName={page.iconName as keyof typeof import("lucide-react")}
-                          href={page.href}
-                        />
+                        <DiscoverCard title={page.title} category={page.category} iconName={page.iconName as keyof typeof import("lucide-react")} />
                       </div>
                     ))}
                     {/* Then show activities */}

@@ -656,10 +656,16 @@ function SessionPage() {
                   <div key={item._id} className="absolute inset-x-0">
                     <SwipeableCard
                       title={item.name}
-                      imageUrl={item.imageUrl}
+                      imageUrl={item.imageUrl || ""}
                       iconName="HelpCircle"
                       onSwipe={(direction) => handleSwipe(item._id, direction)}
-                      enableUpSwipe={false}
+                      rating={0}
+                      year={0}
+                      duration={0}
+                      genres={[]}
+                      imdbRank={0}
+                      awards={[]}
+                      actors={[]}
                     />
                   </div>
                 );

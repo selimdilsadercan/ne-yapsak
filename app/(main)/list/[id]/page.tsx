@@ -163,7 +163,19 @@ function ListDetailPage() {
                     transition: "transform 0.3s ease-out"
                   }}
                 >
-                  <SwipeableCard title={item.name} imageUrl={item.imageUrl} iconName="HelpCircle" onSwipe={handleSwipe} />
+                  <SwipeableCard
+                    title={item.name}
+                    imageUrl={item.imageUrl || ""}
+                    iconName="HelpCircle"
+                    onSwipe={handleSwipe}
+                    rating={0}
+                    year={0}
+                    duration={0}
+                    genres={[]}
+                    imdbRank={0}
+                    awards={[]}
+                    actors={[]}
+                  />
                 </div>
               );
             })}

@@ -27,14 +27,14 @@ function ListPage() {
     type === "watch"
       ? api.defaultLists.getSuggestedWatches
       : type === "game"
-      ? api.defaultLists.getSuggestedGames
-      : type === "visit"
-      ? api.defaultLists.getSuggestedPlaces
-      : type === "event"
-      ? api.defaultLists.getSuggestedEvents
-      : type === "activity"
-      ? api.defaultLists.getSuggestedActivities
-      : api.activities.getRandomItems,
+        ? api.defaultLists.getSuggestedGames
+        : type === "visit"
+          ? api.defaultLists.getSuggestedPlaces
+          : type === "event"
+            ? api.defaultLists.getSuggestedEvents
+            : type === "activity"
+              ? api.defaultLists.getSuggestedActivities
+              : api.activities.getRandomItems,
     { limit: 10 }
   );
 
@@ -88,10 +88,10 @@ function ListPage() {
                 "type" in item
                   ? item.type
                   : "contentType" in item
-                  ? item.contentType === "movie" || item.contentType === "series"
-                    ? item.contentType
-                    : "activity"
-                  : undefined,
+                    ? item.contentType === "movie" || item.contentType === "series"
+                      ? item.contentType
+                      : "activity"
+                    : undefined,
               iconName: "iconName" in item ? item.iconName : undefined
             };
 
@@ -114,8 +114,15 @@ function ListPage() {
                 <SwipeableCard
                   title={listItem.title}
                   iconName={listItem.iconName || (listItem.type === "movie" ? "Film" : listItem.type === "series" ? "Tv" : "Activity")}
-                  imageUrl={listItem.imageUrl}
+                  imageUrl={listItem.imageUrl || ""}
                   onSwipe={handleSwipe}
+                  rating={0}
+                  year={0}
+                  duration={0}
+                  genres={[]}
+                  imdbRank={0}
+                  awards={[]}
+                  actors={[]}
                 />
               </div>
             );
